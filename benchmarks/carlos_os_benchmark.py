@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -233,6 +234,66 @@ def build_selector(descriptions: dict[str, str]):
     return selector
 
 
+def build_llm_selector(
+    descriptions: dict[str, str],
+    model: str = "claude-haiku-4-5-20251001",
+):
+    """
+    Build an LLM-based selector using Claude via the Anthropic SDK.
+
+    The selector sends the query and full tool list to the model and parses
+    the tool name(s) from the response.  Selected tools are ranked first
+    (score 1.0 → 0.99 …); unselected tools follow at score 0.0.
+
+    Requires ``ANTHROPIC_API_KEY`` to be set in the environment.
+    """
+    import anthropic  # optional dependency — only required for LLM runs
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise EnvironmentError(
+            "ANTHROPIC_API_KEY environment variable is not set. "
+            "Export it before running with --llm."
+        )
+
+    client = anthropic.Anthropic(api_key=api_key)
+    tool_ids = list(descriptions.keys())
+    tool_list = "\n".join(f"- {tid}: {desc}" for tid, desc in descriptions.items())
+
+    def selector(query: str) -> list[tuple[str, float]]:
+        response = client.messages.create(
+            model=model,
+            max_tokens=200,
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        f"Given this query: '{query}'\n\n"
+                        f"Which tool(s) should be used? Choose from:\n{tool_list}\n\n"
+                        "Respond with ONLY the tool name(s), one per line. "
+                        "Use exact tool names as listed above."
+                    ),
+                }
+            ],
+        )
+
+        text = response.content[0].text.strip()
+        raw_lines = [line.strip() for line in text.split("\n") if line.strip()]
+        # Keep only valid tool IDs (model may hallucinate names)
+        valid_selected = [t for t in raw_lines if t in tool_ids]
+
+        selected_set = set(valid_selected)
+        ranked: list[tuple[str, float]] = []
+        for i, tid in enumerate(valid_selected):
+            ranked.append((tid, 1.0 - i * 0.01))
+        for tid in tool_ids:
+            if tid not in selected_set:
+                ranked.append((tid, 0.0))
+        return ranked
+
+    return selector
+
+
 # ── Metrics ────────────────────────────────────────────────────────────────────
 
 
@@ -323,9 +384,11 @@ def run_benchmark(
     registry: dict[str, Any],
     queries: list[dict[str, Any]],
     use_enriched: bool,
+    selector_type: str = "tfidf",
+    llm_model: str = "claude-haiku-4-5-20251001",
 ) -> list[dict[str, Any]]:
     """
-    Run all queries through the TF-IDF selector and compute per-query metrics.
+    Run all queries through the selector and compute per-query metrics.
 
     Parameters
     ----------
@@ -335,6 +398,11 @@ def run_benchmark(
         Test queries with 'id', 'query', 'ground_truth', optional 'notes'.
     use_enriched : bool
         Use FabricEnricher descriptions if True, raw descriptions if False.
+    selector_type : str
+        ``"tfidf"`` (default) or ``"llm"``.  LLM mode requires
+        ``ANTHROPIC_API_KEY`` to be set.
+    llm_model : str
+        Anthropic model ID to use when ``selector_type="llm"``.
 
     Returns
     -------
@@ -345,8 +413,12 @@ def run_benchmark(
         if use_enriched
         else get_raw_descriptions(registry)
     )
-    mode = "enriched" if use_enriched else "baseline"
-    selector = build_selector(descriptions)
+    desc_mode = "enriched" if use_enriched else "baseline"
+
+    if selector_type == "llm":
+        selector = build_llm_selector(descriptions, model=llm_model)
+    else:
+        selector = build_selector(descriptions)
 
     results = []
     for q in queries:
@@ -357,7 +429,8 @@ def run_benchmark(
                 "id": q["id"],
                 "query": q["query"],
                 "ground_truth": q["ground_truth"],
-                "mode": mode,
+                "mode": desc_mode,
+                "selector": selector_type,
                 "notes": q.get("notes", ""),
                 **metrics,
             }
@@ -370,7 +443,7 @@ def run_benchmark(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="CARLOS-OS tool-fabric benchmark: baseline vs. enriched TF-IDF accuracy."
+        description="CARLOS-OS tool-fabric benchmark: baseline vs. enriched accuracy."
     )
     parser.add_argument(
         "registry",
@@ -382,6 +455,24 @@ def main(argv: list[str] | None = None) -> int:
         "--output",
         default="benchmarks/results/carlos_os_results.json",
         help="Output path for JSON results.",
+    )
+    parser.add_argument(
+        "--llm",
+        action="store_true",
+        help=(
+            "Also run LLM (Claude Haiku) selector conditions and save results to "
+            "benchmarks/results/llm_results.json. Requires ANTHROPIC_API_KEY."
+        ),
+    )
+    parser.add_argument(
+        "--llm-model",
+        default="claude-haiku-4-5-20251001",
+        help="Anthropic model ID for --llm runs (default: claude-haiku-4-5-20251001).",
+    )
+    parser.add_argument(
+        "--llm-output",
+        default="benchmarks/results/llm_results.json",
+        help="Output path for LLM results JSON (default: benchmarks/results/llm_results.json).",
     )
     args = parser.parse_args(argv)
 
@@ -396,6 +487,7 @@ def main(argv: list[str] | None = None) -> int:
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # ── TF-IDF conditions ───────────────────────────────────────────────────
     baseline_results = run_benchmark(registry, TEST_QUERIES, use_enriched=False)
     enriched_results = run_benchmark(registry, TEST_QUERIES, use_enriched=True)
 
@@ -425,24 +517,114 @@ def main(argv: list[str] | None = None) -> int:
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2)
 
-    # ── Print summary table ─────────────────────────────────────────────────
+    # ── Print TF-IDF summary table ──────────────────────────────────────────
     n_tools = output["n_tools"]
     n_q = len(TEST_QUERIES)
     print(f"\ntool-fabric CARLOS-OS Benchmark")
     print(f"Registry : {registry_path}  ({n_tools} tools, {n_q} queries)")
     print()
-    print(f"{'Metric':<20} {'Baseline':>10} {'Enriched':>10} {'Delta':>10}")
-    print("-" * 55)
+    print(f"{'Metric':<20} {'TF-IDF Base':>12} {'TF-IDF Enr':>12} {'Delta':>10}")
+    print("-" * 60)
     for metric in ["hit@1", "hit@k", "mrr", "avg_precision@k", "avg_recall@k"]:
         b = baseline_agg.get(metric, 0.0)
         e = enriched_agg.get(metric, 0.0)
         d = delta.get(metric, 0.0)
         sign = "+" if d >= 0 else ""
-        print(f"{metric:<20} {b:>10.4f} {e:>10.4f} {sign}{d:>9.4f}")
+        print(f"{metric:<20} {b:>12.4f} {e:>12.4f} {sign}{d:>9.4f}")
     print()
     print(f"hit@1 lift : {output['summary']['hit@1_lift']}")
     print(f"MRR lift   : {output['summary']['mrr_lift']}")
-    print(f"\nResults written to: {output_path}")
+    print(f"\nTF-IDF results written to: {output_path}")
+
+    # ── LLM conditions (optional) ───────────────────────────────────────────
+    if args.llm:
+        print(f"\nRunning LLM selector ({args.llm_model}) — 40 API calls …")
+        llm_baseline_results = run_benchmark(
+            registry,
+            TEST_QUERIES,
+            use_enriched=False,
+            selector_type="llm",
+            llm_model=args.llm_model,
+        )
+        print("  LLM baseline done.")
+        llm_enriched_results = run_benchmark(
+            registry,
+            TEST_QUERIES,
+            use_enriched=True,
+            selector_type="llm",
+            llm_model=args.llm_model,
+        )
+        print("  LLM enriched done.")
+
+        llm_baseline_agg = aggregate_metrics(llm_baseline_results)
+        llm_enriched_agg = aggregate_metrics(llm_enriched_results)
+
+        llm_numeric_keys = [k for k in llm_baseline_agg if k != "n_queries"]
+        llm_delta = {
+            k: round(llm_enriched_agg[k] - llm_baseline_agg[k], 4)
+            for k in llm_numeric_keys
+            if k in llm_enriched_agg
+        }
+
+        llm_output = {
+            "registry": str(registry_path),
+            "model": args.llm_model,
+            "n_tools": len(registry.get("tools") or {}),
+            "n_queries": len(TEST_QUERIES),
+            "llm_baseline": {
+                "aggregate": llm_baseline_agg,
+                "per_query": llm_baseline_results,
+            },
+            "llm_enriched": {
+                "aggregate": llm_enriched_agg,
+                "per_query": llm_enriched_results,
+            },
+            "delta": llm_delta,
+            "summary": {
+                "hit@1_lift": f"{llm_delta.get('hit@1', 0):+.1%}",
+                "mrr_lift": f"{llm_delta.get('mrr', 0):+.4f}",
+            },
+            # Cross-selector comparison (all four conditions)
+            "comparison": {
+                "tfidf_baseline": {
+                    "hit@1": baseline_agg.get("hit@1", 0.0),
+                    "mrr": baseline_agg.get("mrr", 0.0),
+                },
+                "tfidf_enriched": {
+                    "hit@1": enriched_agg.get("hit@1", 0.0),
+                    "mrr": enriched_agg.get("mrr", 0.0),
+                },
+                "llm_baseline": {
+                    "hit@1": llm_baseline_agg.get("hit@1", 0.0),
+                    "mrr": llm_baseline_agg.get("mrr", 0.0),
+                },
+                "llm_enriched": {
+                    "hit@1": llm_enriched_agg.get("hit@1", 0.0),
+                    "mrr": llm_enriched_agg.get("mrr", 0.0),
+                },
+            },
+        }
+
+        llm_output_path = Path(args.llm_output)
+        llm_output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(llm_output_path, "w") as f:
+            json.dump(llm_output, f, indent=2)
+
+        # ── Print 4-condition comparison table ─────────────────────────────
+        print("\n── 4-Condition Comparison ─────────────────────────────────────")
+        print(f"{'Selector':<8} {'Descriptions':<14} {'hit@1':>8} {'MRR':>8}")
+        print("-" * 44)
+        rows = [
+            ("tfidf", "baseline", baseline_agg.get("hit@1", 0.0), baseline_agg.get("mrr", 0.0)),
+            ("tfidf", "enriched", enriched_agg.get("hit@1", 0.0), enriched_agg.get("mrr", 0.0)),
+            ("llm", "baseline", llm_baseline_agg.get("hit@1", 0.0), llm_baseline_agg.get("mrr", 0.0)),
+            ("llm", "enriched", llm_enriched_agg.get("hit@1", 0.0), llm_enriched_agg.get("mrr", 0.0)),
+        ]
+        for sel, desc, h1, mrr in rows:
+            print(f"{sel:<8} {desc:<14} {h1:>8.4f} {mrr:>8.4f}")
+        print()
+        print(f"LLM results written to: {llm_output_path}")
+
     return 0
 
 

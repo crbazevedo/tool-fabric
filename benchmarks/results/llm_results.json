@@ -1,15 +1,16 @@
 {
   "registry": "examples/carlos-os/.tool-fabric.yaml",
+  "model": "claude-haiku-4-5-20251001",
   "n_tools": 41,
   "n_queries": 20,
-  "baseline": {
+  "llm_baseline": {
     "aggregate": {
       "n_queries": 20,
-      "hit@1": 0.65,
-      "hit@k": 0.65,
-      "mrr": 0.7592,
-      "avg_precision@k": 0.65,
-      "avg_recall@k": 0.65
+      "hit@1": 0.95,
+      "hit@k": 0.95,
+      "mrr": 0.975,
+      "avg_precision@k": 0.95,
+      "avg_recall@k": 0.95
     },
     "per_query": [
       {
@@ -19,7 +20,7 @@
           "github_create_issue"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Simple single-tool; baseline should get this right.",
         "hit@1": 1,
         "hit@k": 1,
@@ -28,7 +29,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "github_create_issue",
-        "top_score": 0.2951
+        "top_score": 1.0
       },
       {
         "id": "q02",
@@ -37,16 +38,16 @@
           "linear_create_issue"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "GitHub vs Linear disambiguation \u2014 tests query_tips.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "github_create_issue",
-        "top_score": 0.2535
+        "top_prediction": "linear_create_issue",
+        "top_score": 1.0
       },
       {
         "id": "q03",
@@ -55,7 +56,7 @@
           "slack_send_message"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Slack vs Gmail \u2014 'Slack channel' is the key signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -64,7 +65,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "slack_send_message",
-        "top_score": 0.2855
+        "top_score": 1.0
       },
       {
         "id": "q04",
@@ -73,7 +74,7 @@
           "gmail_send"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Gmail vs Slack \u2014 'formal email' + 'client' tips it.",
         "hit@1": 1,
         "hit@k": 1,
@@ -82,7 +83,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "gmail_send",
-        "top_score": 0.1457
+        "top_score": 1.0
       },
       {
         "id": "q05",
@@ -91,7 +92,7 @@
           "bash_execute"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "bash vs python \u2014 'shell command' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -100,7 +101,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "bash_execute",
-        "top_score": 0.3483
+        "top_score": 1.0
       },
       {
         "id": "q06",
@@ -109,7 +110,7 @@
           "github_create_pr"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Distinct intent \u2014 no close alternative in the registry.",
         "hit@1": 1,
         "hit@k": 1,
@@ -118,7 +119,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "github_create_pr",
-        "top_score": 0.3686
+        "top_score": 1.0
       },
       {
         "id": "q07",
@@ -127,16 +128,16 @@
           "web_search"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "web_search vs web_fetch \u2014 'search online' tips it; URL not known.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.0833,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "kb_search_entities",
-        "top_score": 0.2059
+        "top_prediction": "web_search",
+        "top_score": 1.0
       },
       {
         "id": "q08",
@@ -145,16 +146,16 @@
           "file_read"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Distinct file-system read intent.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.5,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "file_write",
-        "top_score": 0.232
+        "top_prediction": "file_read",
+        "top_score": 1.0
       },
       {
         "id": "q09",
@@ -163,7 +164,7 @@
           "python_execute"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "bash vs python \u2014 'Python script' is the disambiguating signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -172,7 +173,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "python_execute",
-        "top_score": 0.3221
+        "top_score": 1.0
       },
       {
         "id": "q10",
@@ -181,16 +182,16 @@
           "claude_invoke"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "LLM selection \u2014 claude vs gemini vs gpt.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.5,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "github_search_issues",
-        "top_score": 0.1516
+        "top_prediction": "claude_invoke",
+        "top_score": 1.0
       },
       {
         "id": "q11",
@@ -199,7 +200,7 @@
           "calendar_find_slot"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "find_slot vs create_event \u2014 'find a slot' signals search.",
         "hit@1": 1,
         "hit@k": 1,
@@ -208,7 +209,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "calendar_find_slot",
-        "top_score": 0.2709
+        "top_score": 1.0
       },
       {
         "id": "q12",
@@ -217,16 +218,16 @@
           "calendar_create_event"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "create_event vs find_slot \u2014 'create an event' signals write.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.5,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "calendar_invite_attendees",
-        "top_score": 0.5496
+        "top_prediction": "calendar_create_event",
+        "top_score": 1.0
       },
       {
         "id": "q13",
@@ -235,7 +236,7 @@
           "notion_update_budget"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Finance domain \u2014 Notion budget update.",
         "hit@1": 1,
         "hit@k": 1,
@@ -244,7 +245,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "notion_update_budget",
-        "top_score": 0.3223
+        "top_score": 1.0
       },
       {
         "id": "q14",
@@ -253,16 +254,16 @@
           "linear_search_issues"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Search-before-create \u2014 'check' and 'already' signal search intent.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1667,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "github_create_issue",
-        "top_score": 0.3296
+        "top_prediction": "linear_search_issues",
+        "top_score": 1.0
       },
       {
         "id": "q15",
@@ -271,16 +272,16 @@
           "github_add_label"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Narrow GitHub sub-operation \u2014 labels.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.3333,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "github_assign_issue",
-        "top_score": 0.3492
+        "top_prediction": "github_add_label",
+        "top_score": 1.0
       },
       {
         "id": "q16",
@@ -289,7 +290,7 @@
           "web_fetch"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "web_fetch vs web_search \u2014 'URL I already have' + 'full content'.",
         "hit@1": 1,
         "hit@k": 1,
@@ -298,7 +299,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "web_fetch",
-        "top_score": 0.3292
+        "top_score": 1.0
       },
       {
         "id": "q17",
@@ -307,16 +308,16 @@
           "gmail_create_draft"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "gmail_create_draft vs gmail_send \u2014 'do not send' is the key signal.",
-        "hit@1": 1,
-        "hit@k": 1,
-        "precision@k": 1.0,
-        "recall@k": 1.0,
-        "mrr": 1.0,
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
         "k": 1,
-        "top_prediction": "gmail_create_draft",
-        "top_score": 0.3567
+        "top_prediction": "claude_invoke",
+        "top_score": 1.0
       },
       {
         "id": "q18",
@@ -325,7 +326,7 @@
           "slack_send_message_thread"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "slack thread vs channel \u2014 'threaded reply' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -334,7 +335,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "slack_send_message_thread",
-        "top_score": 0.8299
+        "top_score": 1.0
       },
       {
         "id": "q19",
@@ -344,7 +345,7 @@
           "calendar_create_event"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Multi-tool: sequential find-then-create pattern.",
         "hit@1": 1,
         "hit@k": 1,
@@ -353,7 +354,7 @@
         "mrr": 1.0,
         "k": 2,
         "top_prediction": "calendar_find_slot",
-        "top_score": 0.3226
+        "top_score": 1.0
       },
       {
         "id": "q20",
@@ -362,7 +363,7 @@
           "github_search_issues"
         ],
         "mode": "baseline",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "github_search vs github_create \u2014 'search existing' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -371,18 +372,18 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "github_search_issues",
-        "top_score": 0.3127
+        "top_score": 1.0
       }
     ]
   },
-  "enriched": {
+  "llm_enriched": {
     "aggregate": {
       "n_queries": 20,
-      "hit@1": 0.45,
-      "hit@k": 0.45,
-      "mrr": 0.6054,
-      "avg_precision@k": 0.425,
-      "avg_recall@k": 0.425
+      "hit@1": 0.95,
+      "hit@k": 0.95,
+      "mrr": 0.975,
+      "avg_precision@k": 0.95,
+      "avg_recall@k": 0.95
     },
     "per_query": [
       {
@@ -392,16 +393,16 @@
           "github_create_issue"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Simple single-tool; baseline should get this right.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1111,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "linear_assign_issue",
-        "top_score": 0.2095
+        "top_prediction": "github_create_issue",
+        "top_score": 1.0
       },
       {
         "id": "q02",
@@ -410,16 +411,16 @@
           "linear_create_issue"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "GitHub vs Linear disambiguation \u2014 tests query_tips.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1111,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "linear_add_to_cycle",
-        "top_score": 0.2226
+        "top_prediction": "linear_create_issue",
+        "top_score": 1.0
       },
       {
         "id": "q03",
@@ -428,16 +429,16 @@
           "slack_send_message"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Slack vs Gmail \u2014 'Slack channel' is the key signal.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.3333,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "slack_add_reaction",
-        "top_score": 0.3877
+        "top_prediction": "slack_send_message",
+        "top_score": 1.0
       },
       {
         "id": "q04",
@@ -446,7 +447,7 @@
           "gmail_send"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Gmail vs Slack \u2014 'formal email' + 'client' tips it.",
         "hit@1": 1,
         "hit@k": 1,
@@ -455,7 +456,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "gmail_send",
-        "top_score": 0.1298
+        "top_score": 1.0
       },
       {
         "id": "q05",
@@ -464,7 +465,7 @@
           "bash_execute"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "bash vs python \u2014 'shell command' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -473,7 +474,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "bash_execute",
-        "top_score": 0.2384
+        "top_score": 1.0
       },
       {
         "id": "q06",
@@ -482,7 +483,7 @@
           "github_create_pr"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Distinct intent \u2014 no close alternative in the registry.",
         "hit@1": 1,
         "hit@k": 1,
@@ -491,7 +492,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "github_create_pr",
-        "top_score": 0.3988
+        "top_score": 1.0
       },
       {
         "id": "q07",
@@ -500,16 +501,16 @@
           "web_search"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "web_search vs web_fetch \u2014 'search online' tips it; URL not known.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.0769,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "kb_search_entities",
-        "top_score": 0.1088
+        "top_prediction": "web_search",
+        "top_score": 1.0
       },
       {
         "id": "q08",
@@ -518,7 +519,7 @@
           "file_read"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Distinct file-system read intent.",
         "hit@1": 1,
         "hit@k": 1,
@@ -527,7 +528,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "file_read",
-        "top_score": 0.2372
+        "top_score": 1.0
       },
       {
         "id": "q09",
@@ -536,7 +537,7 @@
           "python_execute"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "bash vs python \u2014 'Python script' is the disambiguating signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -545,7 +546,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "python_execute",
-        "top_score": 0.2627
+        "top_score": 1.0
       },
       {
         "id": "q10",
@@ -554,16 +555,16 @@
           "claude_invoke"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "LLM selection \u2014 claude vs gemini vs gpt.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1667,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "search_episodes",
-        "top_score": 0.1214
+        "top_prediction": "claude_invoke",
+        "top_score": 1.0
       },
       {
         "id": "q11",
@@ -572,7 +573,7 @@
           "calendar_find_slot"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "find_slot vs create_event \u2014 'find a slot' signals search.",
         "hit@1": 1,
         "hit@k": 1,
@@ -581,7 +582,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "calendar_find_slot",
-        "top_score": 0.2547
+        "top_score": 1.0
       },
       {
         "id": "q12",
@@ -590,7 +591,7 @@
           "calendar_create_event"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "create_event vs find_slot \u2014 'create an event' signals write.",
         "hit@1": 0,
         "hit@k": 0,
@@ -598,8 +599,8 @@
         "recall@k": 0.0,
         "mrr": 0.5,
         "k": 1,
-        "top_prediction": "calendar_invite_attendees",
-        "top_score": 0.5086
+        "top_prediction": "calendar_find_slot",
+        "top_score": 1.0
       },
       {
         "id": "q13",
@@ -608,16 +609,16 @@
           "notion_update_budget"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Finance domain \u2014 Notion budget update.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.5,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "notion_query_database",
-        "top_score": 0.417
+        "top_prediction": "notion_update_budget",
+        "top_score": 1.0
       },
       {
         "id": "q14",
@@ -626,16 +627,16 @@
           "linear_search_issues"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Search-before-create \u2014 'check' and 'already' signal search intent.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.1429,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "linear_set_priority",
-        "top_score": 0.2919
+        "top_prediction": "linear_search_issues",
+        "top_score": 1.0
       },
       {
         "id": "q15",
@@ -644,16 +645,16 @@
           "github_add_label"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Narrow GitHub sub-operation \u2014 labels.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.3333,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "github_assign_issue",
-        "top_score": 0.2467
+        "top_prediction": "github_add_label",
+        "top_score": 1.0
       },
       {
         "id": "q16",
@@ -662,16 +663,16 @@
           "web_fetch"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "web_fetch vs web_search \u2014 'URL I already have' + 'full content'.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.5,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "web_search",
-        "top_score": 0.2893
+        "top_prediction": "web_fetch",
+        "top_score": 1.0
       },
       {
         "id": "q17",
@@ -680,16 +681,16 @@
           "gmail_create_draft"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "gmail_create_draft vs gmail_send \u2014 'do not send' is the key signal.",
-        "hit@1": 0,
-        "hit@k": 0,
-        "precision@k": 0.0,
-        "recall@k": 0.0,
-        "mrr": 0.3333,
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
         "k": 1,
-        "top_prediction": "docs_search",
-        "top_score": 0.1283
+        "top_prediction": "gmail_create_draft",
+        "top_score": 1.0
       },
       {
         "id": "q18",
@@ -698,7 +699,7 @@
           "slack_send_message_thread"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "slack thread vs channel \u2014 'threaded reply' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -707,7 +708,7 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "slack_send_message_thread",
-        "top_score": 0.5199
+        "top_score": 1.0
       },
       {
         "id": "q19",
@@ -717,16 +718,16 @@
           "calendar_create_event"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "Multi-tool: sequential find-then-create pattern.",
         "hit@1": 1,
         "hit@k": 1,
-        "precision@k": 0.5,
-        "recall@k": 0.5,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
         "mrr": 1.0,
         "k": 2,
         "top_prediction": "calendar_find_slot",
-        "top_score": 0.3453
+        "top_score": 1.0
       },
       {
         "id": "q20",
@@ -735,7 +736,7 @@
           "github_search_issues"
         ],
         "mode": "enriched",
-        "selector": "tfidf",
+        "selector": "llm",
         "notes": "github_search vs github_create \u2014 'search existing' is the signal.",
         "hit@1": 1,
         "hit@k": 1,
@@ -744,19 +745,37 @@
         "mrr": 1.0,
         "k": 1,
         "top_prediction": "github_search_issues",
-        "top_score": 0.2444
+        "top_score": 1.0
       }
     ]
   },
   "delta": {
-    "hit@1": -0.2,
-    "hit@k": -0.2,
-    "mrr": -0.1538,
-    "avg_precision@k": -0.225,
-    "avg_recall@k": -0.225
+    "hit@1": 0.0,
+    "hit@k": 0.0,
+    "mrr": 0.0,
+    "avg_precision@k": 0.0,
+    "avg_recall@k": 0.0
   },
   "summary": {
-    "hit@1_lift": "-20.0%",
-    "mrr_lift": "-0.1538"
+    "hit@1_lift": "+0.0%",
+    "mrr_lift": "+0.0000"
+  },
+  "comparison": {
+    "tfidf_baseline": {
+      "hit@1": 0.65,
+      "mrr": 0.7592
+    },
+    "tfidf_enriched": {
+      "hit@1": 0.45,
+      "mrr": 0.6054
+    },
+    "llm_baseline": {
+      "hit@1": 0.95,
+      "mrr": 0.975
+    },
+    "llm_enriched": {
+      "hit@1": 0.95,
+      "mrr": 0.975
+    }
   }
 }
