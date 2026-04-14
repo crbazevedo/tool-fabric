@@ -1,0 +1,427 @@
+{
+  "_meta": {
+    "note": "Synthetic confuser tools — plausible but overlapping with real CARLOS-OS tools. Used to inflate the tool pool from 68 to 155+ for scale benchmark.",
+    "categories": ["knowledge", "kb_entity", "situations", "actionables", "events", "notes", "memory", "governance", "system", "federation"]
+  },
+
+  "search_knowledge": {
+    "description": "Search the knowledge base for relevant information matching a query.\n\nArgs:\n    query: Free-text search query\n    limit: Maximum results to return\n    domain: Optional domain filter\n\nReturns matching knowledge entries ranked by relevance.",
+    "parameters": ["query", "limit", "domain"],
+    "source": "synthetic"
+  },
+  "lookup_fact": {
+    "description": "Look up a specific fact or piece of information from the fact store.\n\nArgs:\n    query: The topic or keyword to look up\n    exact: If True, perform exact match; if False, fuzzy match\n\nReturns the most relevant fact entry.",
+    "parameters": ["query", "exact"],
+    "source": "synthetic"
+  },
+  "find_information": {
+    "description": "Find relevant information matching a natural-language query across all knowledge sources.\n\nArgs:\n    query: Natural-language search query\n    sources: List of sources to search (default: all)\n    limit: Max results\n\nReturns ranked information entries.",
+    "parameters": ["query", "sources", "limit"],
+    "source": "synthetic"
+  },
+  "get_facts": {
+    "description": "Retrieve facts related to a topic or entity.\n\nArgs:\n    topic: The topic to retrieve facts about\n    domain: Optional domain to scope the search\n    include_archived: Whether to include archived facts\n\nReturns a list of relevant facts.",
+    "parameters": ["topic", "domain", "include_archived"],
+    "source": "synthetic"
+  },
+  "knowledge_lookup": {
+    "description": "Look up knowledge about a subject using keyword matching.\n\nArgs:\n    subject: The subject to look up\n    fields: Specific fields to search (title, body, tags)\n\nReturns knowledge entries matching the subject.",
+    "parameters": ["subject", "fields"],
+    "source": "synthetic"
+  },
+  "fetch_fact": {
+    "description": "Fetch a specific fact by its identifier or description.\n\nArgs:\n    identifier: Unique fact ID or descriptive label\n    fallback_search: If True and exact match not found, perform fuzzy search\n\nReturns the matching fact.",
+    "parameters": ["identifier", "fallback_search"],
+    "source": "synthetic"
+  },
+  "query_knowledge": {
+    "description": "Query the knowledge store for content matching filters.\n\nArgs:\n    query: Search query\n    filter_tags: Tags to filter by\n    date_range: Optional date range tuple (start, end)\n    limit: Max results\n\nReturns filtered knowledge entries.",
+    "parameters": ["query", "filter_tags", "date_range", "limit"],
+    "source": "synthetic"
+  },
+  "information_search": {
+    "description": "Search for information across all available sources using BM25 text matching.\n\nArgs:\n    query: Full-text search query\n    boost_recent: Whether to boost recent entries\n    limit: Max results\n\nReturns ranked search results.",
+    "parameters": ["query", "boost_recent", "limit"],
+    "source": "synthetic"
+  },
+  "knowledge_get": {
+    "description": "Get a knowledge entry by its key or reference ID.\n\nArgs:\n    key: The knowledge entry key\n    include_metadata: Whether to include timestamps and source info\n\nReturns the knowledge entry.",
+    "parameters": ["key", "include_metadata"],
+    "source": "synthetic"
+  },
+
+  "find_entities": {
+    "description": "Find entities in the knowledge graph related to a query.\n\nArgs:\n    query: Free-text entity search query\n    entity_type: Optional type filter (person, project, concept, etc.)\n    limit: Max results\n\nReturns matching entities from the knowledge graph.",
+    "parameters": ["query", "entity_type", "limit"],
+    "source": "synthetic"
+  },
+  "search_entity_graph": {
+    "description": "Search the entity knowledge graph using text and relationship traversal.\n\nArgs:\n    query: Search string\n    depth: Graph traversal depth (default 1)\n    types: Entity types to include\n\nReturns entities and their connections.",
+    "parameters": ["query", "depth", "types"],
+    "source": "synthetic"
+  },
+  "entity_lookup": {
+    "description": "Look up an entity by name or type in the knowledge base.\n\nArgs:\n    name: Entity name (exact or partial)\n    entity_type: Type constraint (person, org, project, concept)\n    fuzzy: Whether to allow fuzzy name matching\n\nReturns the matching entity.",
+    "parameters": ["name", "entity_type", "fuzzy"],
+    "source": "synthetic"
+  },
+  "get_related_entities": {
+    "description": "Get entities related to a concept or topic through graph relations.\n\nArgs:\n    concept: The central concept to find relations for\n    relation_types: Types of relations to traverse\n    limit: Max results\n\nReturns related entities and relation types.",
+    "parameters": ["concept", "relation_types", "limit"],
+    "source": "synthetic"
+  },
+  "entity_search": {
+    "description": "Search for entities matching name, type, or attribute criteria.\n\nArgs:\n    query: Text query for entity names/attributes\n    filters: Dict of attribute filters\n    sort_by: Field to sort results by\n\nReturns a list of matching entities.",
+    "parameters": ["query", "filters", "sort_by"],
+    "source": "synthetic"
+  },
+  "graph_search": {
+    "description": "Search the knowledge graph for connected entities and relationships.\n\nArgs:\n    query: Search text\n    start_entity: Optional starting entity for traversal\n    max_hops: Maximum graph traversal depth\n\nReturns entities and edges matching the query.",
+    "parameters": ["query", "start_entity", "max_hops"],
+    "source": "synthetic"
+  },
+  "find_related": {
+    "description": "Find information related to a topic across entities, facts, and episodes.\n\nArgs:\n    topic: The topic to find related information for\n    types: Types of related items to include\n    limit: Max results per type\n\nReturns related items grouped by type.",
+    "parameters": ["topic", "types", "limit"],
+    "source": "synthetic"
+  },
+  "entity_neighbors": {
+    "description": "Get immediate neighbors of an entity in the knowledge graph.\n\nArgs:\n    entity_id: The entity to find neighbors for\n    relation_filter: Optional relation type filter\n    direction: 'outgoing', 'incoming', or 'both'\n\nReturns neighboring entities and relation labels.",
+    "parameters": ["entity_id", "relation_filter", "direction"],
+    "source": "synthetic"
+  },
+  "lookup_entity": {
+    "description": "Look up a specific entity in the knowledge base by exact name.\n\nArgs:\n    name: Exact entity name\n    entity_type: Required type (person, project, org, concept)\n\nReturns the entity record if found.",
+    "parameters": ["name", "entity_type"],
+    "source": "synthetic"
+  },
+
+  "get_active_items": {
+    "description": "Get currently active items and tasks across all domains.\n\nArgs:\n    domain: Optional domain filter\n    include_paused: Whether to include paused items\n    urgency_min: Minimum urgency score threshold\n\nReturns active items sorted by priority.",
+    "parameters": ["domain", "include_paused", "urgency_min"],
+    "source": "synthetic"
+  },
+  "list_current_status": {
+    "description": "List the current status of ongoing work across all tracked items.\n\nArgs:\n    domain: Optional domain to scope listing\n    states: Filter to specific states\n\nReturns a summary of current work status.",
+    "parameters": ["domain", "states"],
+    "source": "synthetic"
+  },
+  "check_status": {
+    "description": "Check the status of active work items and open threads.\n\nArgs:\n    item_id: Optional specific item ID to check\n    domain: Domain to scope the check\n\nReturns status information for matching items.",
+    "parameters": ["item_id", "domain"],
+    "source": "synthetic"
+  },
+  "get_ongoing": {
+    "description": "Get ongoing work and active items across all tracked domains.\n\nArgs:\n    domain: Optional domain filter\n    min_age_hours: Minimum age in hours to include\n\nReturns items that are currently in progress.",
+    "parameters": ["domain", "min_age_hours"],
+    "source": "synthetic"
+  },
+  "list_open_items": {
+    "description": "List open and active work items that have not been resolved.\n\nArgs:\n    domain: Filter by domain\n    assigned_to: Filter by assignee agent\n    sort: Sort field ('urgency', 'created_at', 'updated_at')\n\nReturns open items matching the filters.",
+    "parameters": ["domain", "assigned_to", "sort"],
+    "source": "synthetic"
+  },
+  "status_overview": {
+    "description": "Get a high-level overview of current system status including open work.\n\nArgs:\n    include_resolved: Whether to include recently resolved items\n    domains: List of domains to include\n\nReturns a status summary across domains.",
+    "parameters": ["include_resolved", "domains"],
+    "source": "synthetic"
+  },
+  "active_monitoring": {
+    "description": "Get items currently being monitored or tracked by the system.\n\nArgs:\n    type: Type of monitored item ('situation', 'watcher', 'alert')\n    domain: Optional domain filter\n\nReturns actively monitored items.",
+    "parameters": ["type", "domain"],
+    "source": "synthetic"
+  },
+
+  "get_todos": {
+    "description": "Get a list of things that need to be done.\n\nArgs:\n    domain: Optional domain to scope the list\n    priority: Filter by priority level ('high', 'medium', 'low')\n    assigned_to: Filter by agent or owner\n\nReturns to-do items in priority order.",
+    "parameters": ["domain", "priority", "assigned_to"],
+    "source": "synthetic"
+  },
+  "list_tasks": {
+    "description": "List tasks that need to be completed, optionally filtered by domain.\n\nArgs:\n    domain: Domain to list tasks for\n    state: Task state filter ('pending', 'in_progress', 'blocked')\n    limit: Max results\n\nReturns task list.",
+    "parameters": ["domain", "state", "limit"],
+    "source": "synthetic"
+  },
+  "pending_items": {
+    "description": "Get pending work items that have not yet been started or completed.\n\nArgs:\n    domain: Filter by domain\n    overdue_only: If True, only return overdue items\n\nReturns list of pending items.",
+    "parameters": ["domain", "overdue_only"],
+    "source": "synthetic"
+  },
+  "get_pending": {
+    "description": "Get pending actions and tasks awaiting attention.\n\nArgs:\n    assignee: Filter by assigned agent\n    domain: Optional domain scope\n    since: Only include items created since this timestamp\n\nReturns pending items sorted by urgency.",
+    "parameters": ["assignee", "domain", "since"],
+    "source": "synthetic"
+  },
+  "action_items": {
+    "description": "Get action items that need attention from meetings, conversations, or work sessions.\n\nArgs:\n    source: Source of action items ('meeting', 'email', 'note', 'all')\n    domain: Optional domain filter\n    limit: Max results\n\nReturns unresolved action items.",
+    "parameters": ["source", "domain", "limit"],
+    "source": "synthetic"
+  },
+  "task_list": {
+    "description": "Get the current task list across all or specified domains.\n\nArgs:\n    domains: List of domains to include\n    status: Filter by task status\n    owner: Filter by task owner\n\nReturns the filtered task list.",
+    "parameters": ["domains", "status", "owner"],
+    "source": "synthetic"
+  },
+  "list_pending_work": {
+    "description": "List all pending work items with their current state and priority.\n\nArgs:\n    domain: Domain filter\n    risk_threshold: Only return items above this risk score\n\nReturns pending work sorted by risk and urgency.",
+    "parameters": ["domain", "risk_threshold"],
+    "source": "synthetic"
+  },
+
+  "get_recent_events": {
+    "description": "Get recent events from the system event log.\n\nArgs:\n    limit: Number of recent events to return\n    event_type: Filter by event type\n    domain: Optional domain scope\n\nReturns the most recent events.",
+    "parameters": ["limit", "event_type", "domain"],
+    "source": "synthetic"
+  },
+  "event_log": {
+    "description": "Get the event log for a specific time period.\n\nArgs:\n    start: Start timestamp\n    end: End timestamp\n    stream: Optional event stream to scope\n    limit: Max events to return\n\nReturns events in the time window.",
+    "parameters": ["start", "end", "stream", "limit"],
+    "source": "synthetic"
+  },
+  "query_activity": {
+    "description": "Query recent activity events matching filters.\n\nArgs:\n    query: Text search in event content\n    agent: Filter by agent that created the event\n    since_hours: Only include events from the last N hours\n\nReturns matching activity events.",
+    "parameters": ["query", "agent", "since_hours"],
+    "source": "synthetic"
+  },
+  "activity_log": {
+    "description": "Get the activity log showing recent system and agent actions.\n\nArgs:\n    agent: Filter by agent ID\n    action_type: Type of action ('create', 'update', 'delete', 'read')\n    limit: Max entries\n\nReturns activity log entries.",
+    "parameters": ["agent", "action_type", "limit"],
+    "source": "synthetic"
+  },
+  "fetch_events": {
+    "description": "Fetch events matching specified criteria from the event system.\n\nArgs:\n    filters: Dict of filter criteria\n    stream: Event stream name\n    count: Number of events to fetch\n\nReturns matching events.",
+    "parameters": ["filters", "stream", "count"],
+    "source": "synthetic"
+  },
+  "stream_events": {
+    "description": "Get events from a named event stream.\n\nArgs:\n    stream_name: Name of the event stream\n    since_id: Only events after this ID\n    limit: Max events\n\nReturns events from the stream.",
+    "parameters": ["stream_name", "since_id", "limit"],
+    "source": "synthetic"
+  },
+  "get_event_log": {
+    "description": "Get the event log for diagnostic and audit purposes.\n\nArgs:\n    level: Log level filter ('info', 'warning', 'error')\n    component: System component to scope\n    hours: Look-back window in hours\n\nReturns log entries.",
+    "parameters": ["level", "component", "hours"],
+    "source": "synthetic"
+  },
+
+  "search_meeting_notes": {
+    "description": "Search through meeting notes for relevant content.\n\nArgs:\n    query: Search query for meeting content\n    date_range: Optional (start, end) date filter\n    attendees: Filter by attendee name\n\nReturns matching meeting notes.",
+    "parameters": ["query", "date_range", "attendees"],
+    "source": "synthetic"
+  },
+  "find_notes": {
+    "description": "Find notes matching a search query or tag.\n\nArgs:\n    query: Text search query\n    tags: Tag filter list\n    note_type: Type of note ('meeting', 'personal', 'project')\n\nReturns matching notes.",
+    "parameters": ["query", "tags", "note_type"],
+    "source": "synthetic"
+  },
+  "get_meeting_notes": {
+    "description": "Get notes from a specific meeting or date.\n\nArgs:\n    date: Meeting date (YYYY-MM-DD)\n    attendees: Optional attendee filter\n    topic: Optional topic keyword\n\nReturns meeting notes for the specified meeting.",
+    "parameters": ["date", "attendees", "topic"],
+    "source": "synthetic"
+  },
+  "search_meetings": {
+    "description": "Search for meetings by topic, attendee, or date range.\n\nArgs:\n    query: Search text (topic, attendee name, outcome)\n    since: Start date for search\n    until: End date for search\n\nReturns matching meetings.",
+    "parameters": ["query", "since", "until"],
+    "source": "synthetic"
+  },
+  "note_search": {
+    "description": "Search notes for relevant content using text matching.\n\nArgs:\n    query: Full-text search query\n    category: Note category filter\n    include_archived: Whether to include archived notes\n\nReturns matching note entries.",
+    "parameters": ["query", "category", "include_archived"],
+    "source": "synthetic"
+  },
+  "lookup_notes": {
+    "description": "Look up notes by topic, date, or source document.\n\nArgs:\n    topic: Topic keyword to look up\n    source: Source document or meeting name\n    date: Specific date to look up\n\nReturns relevant notes.",
+    "parameters": ["topic", "source", "date"],
+    "source": "synthetic"
+  },
+  "meeting_search": {
+    "description": "Search meeting records for discussions, decisions, and outcomes.\n\nArgs:\n    query: Search query covering topic, participants, or outcomes\n    meeting_type: Filter by meeting type\n    limit: Max results\n\nReturns matching meeting records.",
+    "parameters": ["query", "meeting_type", "limit"],
+    "source": "synthetic"
+  },
+
+  "get_history": {
+    "description": "Get historical information about past work, decisions, and episodes.\n\nArgs:\n    query: Text search in historical records\n    since: Start date\n    until: End date\n    limit: Max results\n\nReturns historical records matching the query.",
+    "parameters": ["query", "since", "until", "limit"],
+    "source": "synthetic"
+  },
+  "search_history": {
+    "description": "Search through historical records of agent activity and decisions.\n\nArgs:\n    query: Search query\n    agent: Filter by agent ID\n    record_type: Type of record ('decision', 'action', 'episode')\n\nReturns matching historical records.",
+    "parameters": ["query", "agent", "record_type"],
+    "source": "synthetic"
+  },
+  "find_past_work": {
+    "description": "Find past work and completed items matching a description.\n\nArgs:\n    description: Description of the work to find\n    domain: Optional domain filter\n    completed_after: Only show work completed after this date\n\nReturns matching completed work items.",
+    "parameters": ["description", "domain", "completed_after"],
+    "source": "synthetic"
+  },
+  "memory_search": {
+    "description": "Search through agent memory for relevant past information.\n\nArgs:\n    query: Memory search query\n    agent: Agent whose memory to search\n    memory_type: Type of memory ('episodic', 'semantic', 'procedural')\n\nReturns matching memory entries.",
+    "parameters": ["query", "agent", "memory_type"],
+    "source": "synthetic"
+  },
+  "recall_information": {
+    "description": "Recall information from agent memory that matches a description.\n\nArgs:\n    description: Natural-language description of what to recall\n    confidence_min: Minimum confidence threshold for recall\n\nReturns recalled information items.",
+    "parameters": ["description", "confidence_min"],
+    "source": "synthetic"
+  },
+  "get_past_decisions": {
+    "description": "Get past decisions that were made, optionally filtered by topic or time.\n\nArgs:\n    topic: Topic to filter decisions by\n    made_by: Agent or person who made the decision\n    since: Only return decisions after this date\n\nReturns matching past decisions.",
+    "parameters": ["topic", "made_by", "since"],
+    "source": "synthetic"
+  },
+  "search_logs": {
+    "description": "Search through activity logs for events matching a query.\n\nArgs:\n    query: Log search query\n    log_type: Type of log ('system', 'agent', 'error', 'audit')\n    hours: Look-back window in hours\n\nReturns matching log entries.",
+    "parameters": ["query", "log_type", "hours"],
+    "source": "synthetic"
+  },
+  "find_patterns": {
+    "description": "Find patterns in historical data and past agent behavior.\n\nArgs:\n    query: Pattern description to search for\n    domain: Optional domain scope\n    min_frequency: Minimum pattern frequency threshold\n\nReturns matching patterns.",
+    "parameters": ["query", "domain", "min_frequency"],
+    "source": "synthetic"
+  },
+  "episode_search": {
+    "description": "Search session episodes for matching work summaries and outcomes.\n\nArgs:\n    query: Search text\n    agent: Filter by agent involved\n    outcome_type: Filter by outcome type\n\nReturns matching episode records.",
+    "parameters": ["query", "agent", "outcome_type"],
+    "source": "synthetic"
+  },
+
+  "check_compliance": {
+    "description": "Check compliance with organizational policies and governance rules.\n\nArgs:\n    action: The action to check compliance for\n    policy_set: Set of policies to check against\n    domain: Domain context\n\nReturns compliance check result with findings.",
+    "parameters": ["action", "policy_set", "domain"],
+    "source": "synthetic"
+  },
+  "policy_check": {
+    "description": "Check a policy requirement against a proposed action.\n\nArgs:\n    action: Proposed action description\n    policy_id: Specific policy to check\n\nReturns pass/fail result with policy details.",
+    "parameters": ["action", "policy_id"],
+    "source": "synthetic"
+  },
+  "risk_assessment": {
+    "description": "Assess the risk level and blast radius of a proposed action.\n\nArgs:\n    action: Action description\n    context: Additional context for risk evaluation\n    domain: Domain where action will be taken\n\nReturns risk tier and assessment details.",
+    "parameters": ["action", "context", "domain"],
+    "source": "synthetic"
+  },
+  "validate_action": {
+    "description": "Validate if a proposed action is permissible under current policies.\n\nArgs:\n    action: The action to validate\n    agent: Agent proposing the action\n    override_reason: Reason for override if bypassing policy\n\nReturns validation result.",
+    "parameters": ["action", "agent", "override_reason"],
+    "source": "synthetic"
+  },
+  "governance_validate": {
+    "description": "Validate a proposed action against governance rules and risk tiers.\n\nArgs:\n    action: Action description\n    risk_tier: Proposed risk tier classification\n    domain: Affected domain\n\nReturns governance validation with required approvals.",
+    "parameters": ["action", "risk_tier", "domain"],
+    "source": "synthetic"
+  },
+  "check_policy": {
+    "description": "Check if an action meets the policy requirements for a domain.\n\nArgs:\n    action: The action to check\n    domain: Domain whose policies apply\n    include_exceptions: Whether to show policy exception list\n\nReturns policy compliance status.",
+    "parameters": ["action", "domain", "include_exceptions"],
+    "source": "synthetic"
+  },
+  "action_check": {
+    "description": "Check whether an action is allowed under current authorization policies.\n\nArgs:\n    action_type: Type of action\n    target: Target resource or system\n    agent_id: Agent requesting permission\n\nReturns allow/deny decision.",
+    "parameters": ["action_type", "target", "agent_id"],
+    "source": "synthetic"
+  },
+
+  "system_status": {
+    "description": "Get current system status including component health and resource usage.\n\nArgs:\n    components: List of components to check\n    include_metrics: Whether to include performance metrics\n\nReturns system status summary.",
+    "parameters": ["components", "include_metrics"],
+    "source": "synthetic"
+  },
+  "get_overview": {
+    "description": "Get a high-level overview of the system state and active work.\n\nArgs:\n    domains: Domains to include in overview\n    include_recent: Whether to include recent activity\n\nReturns a system overview.",
+    "parameters": ["domains", "include_recent"],
+    "source": "synthetic"
+  },
+  "check_health": {
+    "description": "Check system health and connectivity of all components.\n\nArgs:\n    deep: Whether to perform a deep health check\n    components: Specific components to check\n\nReturns health status for each component.",
+    "parameters": ["deep", "components"],
+    "source": "synthetic"
+  },
+  "system_info": {
+    "description": "Get information about the system configuration and running state.\n\nArgs:\n    section: Configuration section to retrieve\n    verbose: Whether to include detailed information\n\nReturns system information.",
+    "parameters": ["section", "verbose"],
+    "source": "synthetic"
+  },
+  "get_context": {
+    "description": "Get the current context and state of the system.\n\nArgs:\n    context_type: Type of context ('session', 'domain', 'agent')\n    agent_id: Agent to get context for\n\nReturns current context state.",
+    "parameters": ["context_type", "agent_id"],
+    "source": "synthetic"
+  },
+  "status_check": {
+    "description": "Check the status of various system processes and connections.\n\nArgs:\n    target: Specific target to check status for\n    verbose: Whether to return detailed status\n\nReturns status information.",
+    "parameters": ["target", "verbose"],
+    "source": "synthetic"
+  },
+
+  "org_search": {
+    "description": "Search for organizations in the federation registry.\n\nArgs:\n    query: Organization name or attribute to search for\n    org_type: Type of organization to filter by\n    active_only: Only return active organizations\n\nReturns matching organizations.",
+    "parameters": ["query", "org_type", "active_only"],
+    "source": "synthetic"
+  },
+  "list_capabilities": {
+    "description": "List available capabilities registered in the federation.\n\nArgs:\n    org_id: Optional organization to scope capabilities\n    capability_type: Type of capability to list\n    available_only: Only show currently available capabilities\n\nReturns capability list.",
+    "parameters": ["org_id", "capability_type", "available_only"],
+    "source": "synthetic"
+  },
+  "federation_query": {
+    "description": "Query the federation registry for organizations and capabilities.\n\nArgs:\n    query: Search query\n    registry_type: Type of registry ('org', 'capability', 'contract')\n    limit: Max results\n\nReturns matching registry entries.",
+    "parameters": ["query", "registry_type", "limit"],
+    "source": "synthetic"
+  },
+  "contract_history": {
+    "description": "Get the history of federation contract events and settlements.\n\nArgs:\n    org_id: Organization to get contract history for\n    contract_type: Type of contract\n    since: Start date for history\n\nReturns contract event history.",
+    "parameters": ["org_id", "contract_type", "since"],
+    "source": "synthetic"
+  },
+
+  "send_notification": {
+    "description": "Send a notification to a channel or person.\n\nArgs:\n    message: The notification message\n    channel: Target channel or recipient\n    priority: Notification priority ('low', 'normal', 'high', 'urgent')\n\nReturns send confirmation.",
+    "parameters": ["message", "channel", "priority"],
+    "source": "synthetic"
+  },
+  "post_message": {
+    "description": "Post a message to a communication channel.\n\nArgs:\n    message: Message content\n    channel: Target channel identifier\n    thread_id: Optional thread to reply to\n\nReturns message ID and timestamp.",
+    "parameters": ["message", "channel", "thread_id"],
+    "source": "synthetic"
+  },
+  "get_calendar_availability": {
+    "description": "Get calendar availability for scheduling a meeting.\n\nArgs:\n    attendees: List of attendees to check availability for\n    duration_minutes: Meeting duration in minutes\n    date_range: Date range to search within\n\nReturns available time slots.",
+    "parameters": ["attendees", "duration_minutes", "date_range"],
+    "source": "synthetic"
+  },
+  "schedule_meeting": {
+    "description": "Schedule a meeting by finding an available slot and creating the event.\n\nArgs:\n    title: Meeting title\n    attendees: List of attendees\n    duration_minutes: Duration in minutes\n    preferred_times: Preferred time windows\n\nReturns the created meeting event.",
+    "parameters": ["title", "attendees", "duration_minutes", "preferred_times"],
+    "source": "synthetic"
+  },
+  "get_domain_status": {
+    "description": "Get the current status of a specific domain including open work and alerts.\n\nArgs:\n    domain: Domain identifier\n    include_resolved: Whether to include recently resolved items\n\nReturns domain status summary.",
+    "parameters": ["domain", "include_resolved"],
+    "source": "synthetic"
+  },
+  "list_domain_items": {
+    "description": "List all active items within a specific domain.\n\nArgs:\n    domain: The domain to list items for\n    item_types: Types of items to include\n    sort: Sort field\n\nReturns items in the domain.",
+    "parameters": ["domain", "item_types", "sort"],
+    "source": "synthetic"
+  },
+  "get_work_queue": {
+    "description": "Get the current work queue of pending actions and tasks.\n\nArgs:\n    agent: Agent whose queue to retrieve\n    priority_min: Minimum priority threshold\n    domain: Optional domain scope\n\nReturns the work queue.",
+    "parameters": ["agent", "priority_min", "domain"],
+    "source": "synthetic"
+  },
+  "query_decisions": {
+    "description": "Query past decisions by keyword, domain, or decision maker.\n\nArgs:\n    query: Text search in decision records\n    domain: Domain to scope decisions\n    decided_by: Agent or person who made the decision\n    since: Only decisions after this date\n\nReturns matching decisions.",
+    "parameters": ["query", "domain", "decided_by", "since"],
+    "source": "synthetic"
+  },
+  "search_work_history": {
+    "description": "Search the work history for completed tasks and past activity.\n\nArgs:\n    query: Text search query\n    domain: Domain filter\n    date_from: Start date\n    date_to: End date\n\nReturns matching work history entries.",
+    "parameters": ["query", "domain", "date_from", "date_to"],
+    "source": "synthetic"
+  },
+  "get_error_summary": {
+    "description": "Get a summary of recent errors and their resolutions.\n\nArgs:\n    component: Component to get errors for\n    hours: Look-back window in hours\n    include_resolved: Whether to include resolved errors\n\nReturns error summary.",
+    "parameters": ["component", "hours", "include_resolved"],
+    "source": "synthetic"
+  }
+}

@@ -1,0 +1,616 @@
+{
+  "claim_actionable": {
+    "description": "Atomically claim an open actionable for an agent.\n\nUses Redis WATCH/MULTI to ensure exactly one agent wins the race.\nReturns a result dict indicating success or the reason for failure.\n\nArgs:\n    actionable_id: The actionable ID to claim (e.g., 'act-a1b2c3d4')\n    agent_id: The agent ID claiming this actionable (e.g., 'eng1')\n    r: Optional Redis client (uses shared connection if not provided)",
+    "parameters": [
+      "actionable_id",
+      "agent_id",
+      "r"
+    ],
+    "source": "carlos-os"
+  },
+  "release_actionable": {
+    "description": "Release a previously claimed actionable.\n\nOnly the agent that claimed the actionable can release it.\nSupports releasing to 'done', 'cancelled', or 'open' (unclaim).\n\nArgs:\n    actionable_id: The actionable ID to release\n    agent_id: The agent ID releasing this actionable (must match claimed agent)\n    new_status: Target status \u2014 'done', 'cancelled', or 'open' (unclaim)\n    r: Optional Redis client (uses shared connection if not provided)",
+    "parameters": [
+      "actionable_id",
+      "agent_id",
+      "new_status",
+      "r"
+    ],
+    "source": "carlos-os"
+  },
+  "get_slot_availability": {
+    "description": "Scan Google Calendar and return free time slots as plain text.\n\nChecks each weekday (Mon-Fri) in the specified range for availability\nwithin the working window. Returns one line per day with available slots.\n\nOutput format example:\n    Mon, Mar 2: 9-10.30am, 11.15am-12pm, or 1-7pm\n    Tue, Mar 3: 9am-12pm or 2.30-7pm\n    Wed, Mar 4: fully booked\n    Thu, Mar 5: 9-7pm (free all day)\n\nIMPORTANT: Prefer omitting start_date to let the tool auto-detect the\nnext working day. Only pass start_date if the user specifies an exact date.\nWhen the user says a day name like \"monday\", do NOT guess the date \u2014\nomit start_date and the tool will find the correct next Monday automatically.\n\nArgs:\n    days: Number of weekdays to scan (default 5, i.e. one work week).\n    start_date: Start date in YYYY-MM-DD format. Defaults to today\n        (or next Monday if today is a weekend).\n        IMPORTANT: prefer omitting this \u2014 the tool auto-detects the next weekday.\n    window_start: Working window start time in HH:MM 24h format (default \"09:00\").\n    window_end: Working window end time in HH:MM 24h format (default \"19:00\").\n    account: Google account email. Defaults to primary account.\n    calendar_id: Calendar ID to scan (default \"primary\").",
+    "parameters": [
+      "days",
+      "start_date",
+      "window_start",
+      "window_end",
+      "account",
+      "calendar_id"
+    ],
+    "source": "carlos-os"
+  },
+  "get_system_pulse": {
+    "description": "Get system health pulse score and breakdown (VT0).\n\nReturns score (0-100), status (green/yellow/red),\nand per-component breakdown including impeded AOW count.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "get_action_queue": {
+    "description": "Get pending HITL items (action queue) (VT0).\n\nArgs:\n    domain: Optional domain filter. Empty string for all.\n\nReturns:\n    Dict with pending items and decision debt.",
+    "parameters": [
+      "domain"
+    ],
+    "source": "carlos-os"
+  },
+  "set_agent_permission": {
+    "description": "VT4: Set agent permission (owner-only).\n\nArgs:\n    agent_id: The agent to update.\n    permission: One of: execute, propose, advise, paused.\n\nReturns:\n    Success status.",
+    "parameters": [
+      "agent_id",
+      "permission"
+    ],
+    "source": "carlos-os"
+  },
+  "set_agent_goals": {
+    "description": "VT2: Update agent's active goals.\n\nArgs:\n    agent_id: The agent to update.\n    goals: JSON string of goals list.\n\nReturns:\n    Success status.",
+    "parameters": [
+      "agent_id",
+      "goals"
+    ],
+    "source": "carlos-os"
+  },
+  "add_domain_channel": {
+    "description": "VT2: Add a domain channel.\n\nArgs:\n    domain: Domain name (e.g., \"health\", \"learning\").\n    channel_id: Slack channel ID.\n\nReturns:\n    Success status.",
+    "parameters": [
+      "domain",
+      "channel_id"
+    ],
+    "source": "carlos-os"
+  },
+  "set_escalation_channels": {
+    "description": "VT2: Configure escalation cascade order.\n\nArgs:\n    channels: Comma-separated channel list (e.g., \"slack,telegram,email\").\n\nReturns:\n    Success status.",
+    "parameters": [
+      "channels"
+    ],
+    "source": "carlos-os"
+  },
+  "emit_custom_event": {
+    "description": "Emit a custom event to the CARLOS-OS event bus.\n\nArgs:\n    event_type: Event type (e.g., 'actionable.created', 'decision.logged')\n    policy_class: Dispatch policy (immediate/scheduled/windowed/batched/reactive/advisory/proactive)\n    summary: Human-readable event summary\n    domain: Event domain (e.g., 'career', 'finance', 'general')\n    details: Optional payload details dict\n    preferred_channel: Channel preference (slack/email/calendar/any)\n    vt_tier: VT governance tier (0-4)\n    correlation_id: Optional correlation ID for event chains",
+    "parameters": [
+      "event_type",
+      "policy_class",
+      "summary",
+      "domain",
+      "details",
+      "preferred_channel",
+      "vt_tier",
+      "correlation_id"
+    ],
+    "source": "carlos-os"
+  },
+  "query_events": {
+    "description": "Query recent events from the event bus.\n\nArgs:\n    stream: Specific stream name. If omitted, queries all 10 streams.\n    event_type: Optional filter by event type.\n    count: Maximum number of events to return (default 20).",
+    "parameters": [
+      "stream",
+      "event_type",
+      "count"
+    ],
+    "source": "carlos-os"
+  },
+  "event_history": {
+    "description": "Query event history with optional filters.\n\nArgs:\n    stream_category: Stream category to query (deadline/aow/commitment/\n                     ask/actionable/decision/agent/system/all).\n    event_type: Optional exact event type filter.\n    source_agent: Optional filter by source agent name.\n    domain: Optional filter by event domain.\n    count: Maximum number of events to return (default 20).",
+    "parameters": [
+      "stream_category",
+      "event_type",
+      "source_agent",
+      "domain",
+      "count"
+    ],
+    "source": "carlos-os"
+  },
+  "get_event_metrics": {
+    "description": "Get event counts by stream category, plus total, dead_letter, and audit.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "trim_event_streams": {
+    "description": "Trim all event streams to a maximum length.\n\nArgs:\n    maxlen: Maximum entries per stream (default from CARLOS_STREAM_MAXLEN).",
+    "parameters": [
+      "maxlen"
+    ],
+    "source": "carlos-os"
+  },
+  "federation_emit_contract_event": {
+    "description": "Emit one federation contract_event envelope.",
+    "parameters": [
+      "event_type",
+      "org_id",
+      "actor_id",
+      "vt_tier",
+      "governance_trace_id",
+      "payload_json",
+      "metadata_json"
+    ],
+    "source": "carlos-os"
+  },
+  "federation_upsert_org_registry": {
+    "description": "Upsert one organization record in federation org_registry.",
+    "parameters": [
+      "org_id",
+      "display_name",
+      "vt_tier",
+      "governance_trace_id",
+      "status",
+      "metadata_json"
+    ],
+    "source": "carlos-os"
+  },
+  "federation_upsert_capability_registry": {
+    "description": "Upsert one capability record in federation capability_registry.",
+    "parameters": [
+      "org_id",
+      "capability_id",
+      "capability_name",
+      "vt_tier",
+      "governance_trace_id",
+      "status",
+      "metadata_json"
+    ],
+    "source": "carlos-os"
+  },
+  "federation_append_settlement_ledger": {
+    "description": "Append one entry to federation settlement_ledger stream.",
+    "parameters": [
+      "entry_type",
+      "org_id",
+      "account_id",
+      "counterparty_account_id",
+      "amount",
+      "currency",
+      "vt_tier",
+      "governance_trace_id",
+      "metadata_json"
+    ],
+    "source": "carlos-os"
+  },
+  "federation_list_org_registry": {
+    "description": "List federation org IDs from registry index.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "federation_list_capability_registry": {
+    "description": "List capability IDs declared by one org.",
+    "parameters": [
+      "org_id"
+    ],
+    "source": "carlos-os"
+  },
+  "governance_check": {
+    "description": "Run a VT governance pre-check on an action before executing it.\n\nValidates whether the action is allowed under VT tier governance rules.\nUse this before performing sensitive operations to verify permission.\n\nArgs:\n    action: The action to check (e.g., 'deploy', 'store_fact')\n    agent_name: The agent requesting the action\n    vt_tier: VT risk tier (0=auto, 1=log, 2=approve, 3=advise, 4=block)\n    payload: Optional action payload for size/content checks\n\nReturns:\n    JSON with {allowed, reason, tier_policy, metadata}",
+    "parameters": [
+      "action",
+      "agent_name",
+      "vt_tier",
+      "payload"
+    ],
+    "source": "carlos-os"
+  },
+  "classify_action": {
+    "description": "Classify an action and discover applicable governance standards.\n\nLooks up which governance standards apply to a given action.\n\nArgs:\n    action: The action to classify (e.g., 'store_fact', 'deploy', 'pr_merge')\n\nReturns:\n    JSON with {standards: list[dict], action_classified: bool}",
+    "parameters": [
+      "action"
+    ],
+    "source": "carlos-os"
+  },
+  "compliance_check": {
+    "description": "Validate that an action's output meets governance compliance standards.\n\nArgs:\n    action: The action being validated\n    agent_name: The agent that performed the action\n    vt_tier: VT risk tier of the action\n    payload: The action's output payload to validate\n\nReturns:\n    JSON with {compliant: bool, violations: list[str]}",
+    "parameters": [
+      "action",
+      "agent_name",
+      "vt_tier",
+      "payload"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_entity": {
+    "description": "Fetch a single KB entity by ID.\n\nArgs:\n    entity_id: The entity identifier (e.g. ``person:alice``).\n\nReturns:\n    JSON string with entity data, or a descriptive message if not found.",
+    "parameters": [
+      "entity_id"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_search_entities": {
+    "description": "Search KB entities by text or alias (case-insensitive substring match).\n\nArgs:\n    query: Search string \u2014 matched against ``text`` and ``aliases``.\n    entity_type: Optional filter (e.g. ``PERSON``, ``ORG``).\n    limit: Max results (default 20).\n\nReturns:\n    JSON array of matching entities, or a descriptive message if none found.",
+    "parameters": [
+      "query",
+      "entity_type",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_list_entities_by_type": {
+    "description": "List KB entities of a given type, ordered by recency.\n\nArgs:\n    entity_type: One of PERSON, ORG, LOCATION, PROJECT, TECHNOLOGY,\n                 FINANCIAL_AMOUNT, DATE.\n    limit: Max results (default 50).\n\nReturns:\n    JSON array of entities, or a descriptive message if none found.",
+    "parameters": [
+      "entity_type",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_entity_relations": {
+    "description": "Get directed relations for an entity.\n\nArgs:\n    entity_id: Source entity ID.\n    direction: ``out`` (entity is subject), ``in`` (entity is object),\n               or ``both`` (default).\n    limit: Max relations to return.\n\nReturns:\n    JSON array of relations, or a descriptive message if none found.",
+    "parameters": [
+      "entity_id",
+      "direction",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_entity_temporal": {
+    "description": "Get a temporal profile for an entity (first/last seen, doc spread).\n\nDerives the temporal profile from the entity's source documents and\nmetadata timestamps. Falls back to entity ``updated_at`` if no docs.\n\nArgs:\n    entity_id: Entity ID to profile.\n\nReturns:\n    JSON string with temporal profile, or a descriptive message if not found.",
+    "parameters": [
+      "entity_id"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_hybrid_search": {
+    "description": "Search KB entities using hybrid BM25 + vector + graph fusion.\n\nArgs:\n    query: Free-text search query.\n    entity_types: Comma-separated entity type filter (e.g. ``PERSON,ORG``).\n                  Empty string means all types.\n    limit: Max results to return (default 10).\n\nReturns:\n    JSON array of results sorted by RRF score, or a descriptive message.",
+    "parameters": [
+      "query",
+      "entity_types",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_community": {
+    "description": "Get the community assignment for an entity.\n\nCommunity analysis writes `community_id`, `degree_centrality`, and\n`betweenness_centrality` directly onto the entity HASH plus aggregate\nmember counts into ``carlos:kb:communities``.\n\nArgs:\n    entity_id: Entity ID to look up.\n\nReturns:\n    JSON object with community info, or a descriptive message if not found.",
+    "parameters": [
+      "entity_id"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_top_ranked": {
+    "description": "Get the top-ranked KB entities from the global ranking ZSET.\n\nReads from ``carlos:kb:ranking`` sorted set (score = relevance rank,\nhigher = more relevant).\n\nArgs:\n    limit: Max entities to return (default 20).\n\nReturns:\n    JSON array of (entity_id, score) pairs, or a descriptive message.",
+    "parameters": [
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_get_entity_neighbors": {
+    "description": "Get graph neighbours of an entity up to N hops (max 2).\n\nArgs:\n    entity_id: Seed entity ID.\n    hops: Number of hops (1 or 2; capped at 2).\n    limit: Max neighbours to return per hop.\n\nReturns:\n    JSON object with neighbours per hop, or a descriptive message.",
+    "parameters": [
+      "entity_id",
+      "hops",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_cross_correlations": {
+    "description": "Get cross-correlated entities (Jaccard co-occurrence scores).\n\nReads from ``carlos:kb:cooccur:{entity_id}`` ZSET written by\n``carlos_os.retrieval.correlate.cooccurrence()``.\n\nArgs:\n    entity_id: Source entity ID.\n    limit: Max correlated entities to return.\n\nReturns:\n    JSON array of correlated entities with Jaccard scores, or a message.",
+    "parameters": [
+      "entity_id",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "kb_analytics_summary": {
+    "description": "Return a summary of KB analytics.\n\nIncludes entity counts by type, total entity count, community count,\nand top-5 ranked entities.\n\nReturns:\n    JSON object with summary statistics.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "search_episodes": {
+    "description": "Search episode summaries from session history.\n\nEpisodes are narrative summaries of significant work sessions \u2014 what happened,\nwho was involved, and what the outcome was.\n\nArgs:\n    query: Search string (case-insensitive match in title, summary, tags, outcome)\n    domain: Optional \u2014 filter by tag matching this domain\n    agent: Optional \u2014 filter to episodes involving this agent\n    limit: Max results (default 20)",
+    "parameters": [
+      "query",
+      "domain",
+      "agent",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "search_decisions": {
+    "description": "Search architectural and process decisions with rationale.\n\nDecisions record what was chosen, why, and what alternatives were considered.\nUse this to check for precedent before making similar choices.\n\nArgs:\n    query: Search string (case-insensitive match in title, decision, rationale)\n    status: Optional \u2014 filter by status ('accepted', 'superseded', 'rejected')\n    limit: Max results (default 20)",
+    "parameters": [
+      "query",
+      "status",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "search_patterns": {
+    "description": "Search recurring patterns and anti-patterns from codebase history.\n\nPatterns capture how work actually gets done \u2014 validated approaches,\ntheir context, examples, and known anti-patterns.\n\nArgs:\n    query: Search string (case-insensitive match in name, description, context, examples)\n    limit: Max results (default 20)",
+    "parameters": [
+      "query",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "get_agent_memories": {
+    "description": "Get memories for a specific agent (bounded to prevent token overflow).\n\nAgent memories capture capabilities, lessons learned, roles, and preferences\nthat persist across sprints. Use during preflight to load agent context.\n\nArgs:\n    agent_id: Agent identifier (e.g., 'orchestrator', 'eng1', 'qa', 'arch', 'sec', 'eng2', 'pm-a')\n    memory_type: Optional filter \u2014 'capability', 'lesson', 'role', 'preference'\n    limit: Maximum results to return (default 30, max 50)",
+    "parameters": [
+      "agent_id",
+      "memory_type",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "search_error_logs": {
+    "description": "Search error logs with resolutions from past sessions.\n\nError logs capture what went wrong, the error type, and how it was resolved.\nUse when encountering errors to find past resolutions.\n\nArgs:\n    query: Search string (case-insensitive match in description, resolution, tags)\n    error_type: Optional filter \u2014 'integration', 'config', 'runtime', 'permission', etc.\n    limit: Max results (default 20)",
+    "parameters": [
+      "query",
+      "error_type",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "knowledge_stats": {
+    "description": "Get overview statistics of the knowledge base.\n\nReturns counts of all entity types, domain coverage, and agent memory\ndistribution. Useful for understanding what knowledge is available.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "store_fact": {
+    "description": "Store or update a fact in memory.\n\nArgs:\n    domain: Knowledge domain \u2014 use canonical domains: engineering,\n        architecture, infrastructure, security, sprint-history, workflow,\n        backlog, code-review, agents, governance, personal, career, work,\n        finance, ip, korza.\n    key: Fact identifier within the domain\n    value: The fact content\n    confidence: Confidence score 0.0-1.0\n    source: Where this fact came from\n    metadata: Optional additional metadata",
+    "parameters": [
+      "domain",
+      "key",
+      "value",
+      "confidence",
+      "source",
+      "metadata"
+    ],
+    "source": "carlos-os"
+  },
+  "retrieve_fact": {
+    "description": "Retrieve a specific fact by domain and key.\n\nArgs:\n    domain: Knowledge domain\n    key: Fact identifier",
+    "parameters": [
+      "domain",
+      "key"
+    ],
+    "source": "carlos-os"
+  },
+  "list_facts": {
+    "description": "List facts, optionally filtered by domain. Returns up to `limit` results.\n\nUse search_facts() for finding specific facts \u2014 this tool is for browsing.\n\nArgs:\n    domain: Filter to this domain only. If omitted, returns across all domains.\n    limit: Maximum results to return (default 20, max 50).",
+    "parameters": [
+      "domain",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "delete_fact": {
+    "description": "Delete a fact from memory.\n\nArgs:\n    domain: Knowledge domain\n    key: Fact identifier",
+    "parameters": [
+      "domain",
+      "key"
+    ],
+    "source": "carlos-os"
+  },
+  "search_facts": {
+    "description": "Search facts using BM25 full-text search with optional filters and re-ranking.\n\nProvide a specific, descriptive search query for best results. The search\nuses BM25 scoring (term frequency / inverse document frequency) \u2014 more\nspecific queries yield more relevant results than broad ones.\n\nArgs:\n    query: Search query (BM25 full-text search). Be specific.\n    domain: Optional domain filter \u2014 canonical domains: engineering,\n        architecture, infrastructure, security, sprint-history, workflow,\n        backlog, code-review, agents, governance, personal, career, work,\n        finance, ip, korza. Use list_domains() to see all with counts.\n    source: Optional source filter (e.g., 'arch_agent', 'etl:b9c33db6').\n    tags: Optional tag filter \u2014 comma-separated (e.g., 'actionable,decision').\n    limit: Maximum results to return (default 10, max 50).\n    use_rerank: If True, apply Voyage AI re-ranking for higher precision.",
+    "parameters": [
+      "query",
+      "domain",
+      "source",
+      "tags",
+      "limit",
+      "use_rerank"
+    ],
+    "source": "carlos-os"
+  },
+  "create_note": {
+    "description": "Create a new note and store it in Redis.\n\nArgs:\n    title: Note title (short, descriptive).\n    content: Note body text (can be multi-line).\n    domain: Knowledge domain (e.g., engineering, personal, finance).\n    source: Origin \u2014 manual, slack, meeting, or agent.\n    tags: Comma-separated tags (e.g., \"idea,urgent,project-x\").\n    agent_id: Which agent created the note (empty for manual).\n    source_ref: External reference (Slack thread_ts, meeting ID).\n\nReturns:\n    JSON with the created note ID.",
+    "parameters": [
+      "title",
+      "content",
+      "domain",
+      "source",
+      "tags",
+      "agent_id",
+      "source_ref"
+    ],
+    "source": "carlos-os"
+  },
+  "search_notes_tool": {
+    "description": "Search notes by substring match in title and content.\n\nArgs:\n    query: Search text (case-insensitive substring).\n    domain: Optional domain filter.\n    limit: Max results (default 20).\n\nReturns:\n    JSON array of matching notes.",
+    "parameters": [
+      "query",
+      "domain",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "get_note_tool": {
+    "description": "Retrieve a single note by ID.\n\nArgs:\n    note_id: The note identifier (e.g., note-a1b2c3d4).\n\nReturns:\n    JSON with full note data, or error if not found.",
+    "parameters": [
+      "note_id"
+    ],
+    "source": "carlos-os"
+  },
+  "archive_note_tool": {
+    "description": "Archive a note (soft delete).\n\nArgs:\n    note_id: The note identifier to archive.\n\nReturns:\n    JSON with success status.",
+    "parameters": [
+      "note_id"
+    ],
+    "source": "carlos-os"
+  },
+  "process_note_tool": {
+    "description": "Process a note with LLM: correct typos, suggest tags, summarize.\n\nArgs:\n    note_id: The note identifier to process.\n\nReturns:\n    JSON with processing results (corrected title, tags, summary).",
+    "parameters": [
+      "note_id"
+    ],
+    "source": "carlos-os"
+  },
+  "ingest_meeting_transcript_tool": {
+    "description": "Ingest a meeting transcript as a Smart Note with structured extraction.\n\nArgs:\n    transcript: Full meeting transcript text.\n    title: Optional title override (LLM generates one if omitted).\n    domain: Knowledge domain (e.g., engineering, personal).\n    source_ref: External reference (meeting ID, Drive file ID).\n\nReturns:\n    JSON with note_id, title, participants, decisions, action_items.",
+    "parameters": [
+      "transcript",
+      "title",
+      "domain",
+      "source_ref"
+    ],
+    "source": "carlos-os"
+  },
+  "extract_actionables_tool": {
+    "description": "Extract actionable items from a note and create them automatically.\n\nArgs:\n    note_id: The note identifier to extract actionables from.\n\nReturns:\n    JSON with note_id and list of created actionable IDs.",
+    "parameters": [
+      "note_id"
+    ],
+    "source": "carlos-os"
+  },
+  "list_situations": {
+    "description": "List situations filtered by state, domain, and urgency threshold.\n\nArgs:\n    state: Filter by lifecycle state \u2014 emerging, active, evolving, resolved,\n           dissolved. If omitted, returns all non-terminal (non-resolved/\n           non-dissolved) situations.\n    domain: Filter by domain (e.g. 'career', 'finance', 'family', 'general').\n    min_urgency: Minimum urgency threshold (0.0\u20131.0, default 0.0).\n    limit: Max results (default 50).\n\nReturns:\n    JSON array of situations sorted by urgency descending, or a descriptive\n    message if none found.",
+    "parameters": [
+      "state",
+      "domain",
+      "min_urgency",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "get_situation": {
+    "description": "Get full situation detail including events, trajectory, and watchers.\n\nArgs:\n    situation_id: The situation ID (e.g. 'sit-abc12345').\n\nReturns:\n    JSON string with full situation data, lineage events, trajectory\n    snapshots, and associated watchers. Returns a descriptive message\n    if the situation is not found.",
+    "parameters": [
+      "situation_id"
+    ],
+    "source": "carlos-os"
+  },
+  "get_situation_trajectory": {
+    "description": "Get confidence/urgency time series for a situation.\n\nArgs:\n    situation_id: The situation ID.\n    since_hours: How many hours back to look (default 168 = 7 days).\n\nReturns:\n    JSON object with situation_id and array of trajectory point snapshots,\n    sorted by timestamp ascending. Returns a descriptive message if no\n    data is found within the time window.",
+    "parameters": [
+      "situation_id",
+      "since_hours"
+    ],
+    "source": "carlos-os"
+  },
+  "search_situations": {
+    "description": "Free-text search across situation names and descriptions.\n\nArgs:\n    query: Search string \u2014 case-insensitive substring match on name\n           and description.\n    limit: Max results (default 20).\n\nReturns:\n    JSON array of matching situations with summary fields, or a\n    descriptive message if none match.",
+    "parameters": [
+      "query",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "list_watchers": {
+    "description": "List situation watchers.\n\nArgs:\n    active_only: If True (default), return only watchers in the active set.\n                 If False, scan all watcher keys.\n\nReturns:\n    JSON array of watcher summaries, or a descriptive message if none found.",
+    "parameters": [
+      "active_only"
+    ],
+    "source": "carlos-os"
+  },
+  "create_situation": {
+    "description": "VT1: Create a new situation from user input.\n\nArgs:\n    name: Situation name \u2014 short, descriptive, identifies the hypothesis.\n    description: What is happening and why it matters.\n    domain: Domain context (default 'general'). E.g. 'career', 'finance',\n            'family', 'health', 'korza'.\n    confidence: Initial confidence score (0.0\u20131.0, default 0.5).\n    urgency: Initial urgency score (0.0\u20131.0, default 0.5).\n\nReturns:\n    JSON string with the created situation summary, or an error message.",
+    "parameters": [
+      "name",
+      "description",
+      "domain",
+      "confidence",
+      "urgency"
+    ],
+    "source": "carlos-os"
+  },
+  "create_actionable": {
+    "description": "Create a new actionable (FUP, commitment, promise, deadline, task).\n\nArgs:\n    title: Short description of the action needed\n    type: One of: fup, commitment, promise, deadline, task, decision, escalation\n    description: Detailed description\n    domain: Domain this belongs to\n    stakeholders: People involved\n    criticality: One of: low, medium, high, critical\n    due_at: Hard deadline (ISO datetime string)\n    channel: Interaction channel\n    context: Situational context\n    parent_id: Parent actionable ID\n    source: Where this came from\n    metadata: Additional metadata\n    proposed_deadline: Optional proposed deadline (ISO date, e.g. '2026-03-01')\n    deadline_rationale: Why the deadline was proposed (e.g. 'sprint boundary')",
+    "parameters": [
+      "title",
+      "type",
+      "description",
+      "domain",
+      "stakeholders",
+      "criticality",
+      "due_at",
+      "channel",
+      "context",
+      "parent_id",
+      "source",
+      "metadata",
+      "proposed_deadline",
+      "deadline_rationale"
+    ],
+    "source": "carlos-os"
+  },
+  "get_actionable": {
+    "description": "Get full details of an actionable including computed risk score.\n\nArgs:\n    actionable_id: The actionable ID (e.g., 'act-a1b2c3d4')",
+    "parameters": [
+      "actionable_id"
+    ],
+    "source": "carlos-os"
+  },
+  "update_actionable": {
+    "description": "Update an existing actionable's fields.\n\nArgs:\n    actionable_id: The actionable ID\n    status: New status (open/in_progress/blocked/done/expired/cancelled)\n    title: New title\n    description: New description\n    criticality: New criticality (low/medium/high/critical)\n    due_at: New deadline (ISO datetime)\n    add_risk_factor: Add a risk factor event description\n    add_stakeholder: Add a stakeholder\n    channel: Update interaction channel\n    context: Update interaction context\n    metadata: Merge additional metadata",
+    "parameters": [
+      "actionable_id",
+      "status",
+      "title",
+      "description",
+      "criticality",
+      "due_at",
+      "add_risk_factor",
+      "add_stakeholder",
+      "channel",
+      "context",
+      "metadata"
+    ],
+    "source": "carlos-os"
+  },
+  "list_actionables": {
+    "description": "List actionables with optional filters, sorted by risk score.\n\nArgs:\n    domain: Filter by domain\n    status: Filter by status\n    type: Filter by type\n    include_risk: Include computed risk scores (default true)\n    limit: Maximum results to return (default 50, max 100)",
+    "parameters": [
+      "domain",
+      "status",
+      "type",
+      "include_risk",
+      "limit"
+    ],
+    "source": "carlos-os"
+  },
+  "set_aow": {
+    "description": "Set the Action Opportunity Window for an actionable.\n\nArgs:\n    actionable_id: The actionable ID\n    earliest: Can't act before this (ISO datetime)\n    optimal_start: Best time to start (ISO datetime)\n    optimal_end: Best time to finish (ISO datetime)\n    latest: Hard deadline (ISO datetime)\n    working_hours_start: Daily start time (HH:MM)\n    working_hours_end: Daily end time (HH:MM)\n    timezone: IANA timezone\n    blocked_by: List of actionable IDs that must complete first",
+    "parameters": [
+      "actionable_id",
+      "earliest",
+      "optimal_start",
+      "optimal_end",
+      "latest",
+      "working_hours_start",
+      "working_hours_end",
+      "timezone",
+      "blocked_by"
+    ],
+    "source": "carlos-os"
+  },
+  "set_domain_policy": {
+    "description": "Set access and retention policy for a memory domain.\n\nArgs:\n    domain: The domain name\n    allowed_agents: List of agent names that can access this domain\n    confidentiality: standard/high/critical\n    retention: permanent/session/ttl\n    default_ttl: Default TTL in seconds\n    description: Human-readable description",
+    "parameters": [
+      "domain",
+      "allowed_agents",
+      "confidentiality",
+      "retention",
+      "default_ttl",
+      "description"
+    ],
+    "source": "carlos-os"
+  },
+  "get_domain_policy": {
+    "description": "Get the policy for a memory domain.\n\nArgs:\n    domain: The domain name",
+    "parameters": [
+      "domain"
+    ],
+    "source": "carlos-os"
+  },
+  "post_to_slack": {
+    "description": "Post a message to Slack via the CARLOS-OS bot.\n\nArgs:\n    message: The message text to post (supports Slack mrkdwn).\n    channel: Slack channel ID. Defaults to CARLOS_SLACK_CHANNEL.\n    thread_ts: Optional thread timestamp to reply in a thread.",
+    "parameters": [
+      "message",
+      "channel",
+      "thread_ts"
+    ],
+    "source": "carlos-os"
+  },
+  "list_domains": {
+    "description": "List all known memory domains and their fact counts.",
+    "parameters": [],
+    "source": "carlos-os"
+  },
+  "memory_stats": {
+    "description": "Get overall memory statistics.",
+    "parameters": [],
+    "source": "carlos-os"
+  }
+}
