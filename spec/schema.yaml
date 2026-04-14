@@ -1,0 +1,285 @@
+$schema: "https://json-schema.org/draft/2020-12"
+title: tool-fabric registry schema
+description: >
+  Declarative governance schema for LLM tool registries.
+  Annotate your tools with relationship metadata to enable
+  linting, compositional validation, and inference-time selection.
+
+type: object
+required: [tools]
+
+properties:
+
+  # ── Tools ─────────────────────────────────────────────────────────────────
+  tools:
+    type: object
+    description: >
+      Map of tool_id → tool definition. tool_id must be stable across
+      registry versions — it is the canonical reference in patterns and
+      concept edges.
+    additionalProperties:
+      type: object
+      required: [category]
+      properties:
+
+        category:
+          type: string
+          description: >
+            Coarse domain bucket. Used for MECE coverage checks.
+            Examples: project-management, communication, code, file-system,
+            search, data, calendar, finance, devops, ai-inference.
+
+        description:
+          type: string
+          description: >
+            One-sentence tool description optimised for LLM disambiguation.
+            Should include: what the tool does, what it returns, and one
+            negative example (when NOT to use it).
+            Target: 20-60 words. Shorter descriptions score lower on quality checks.
+
+        concepts_required:
+          type: array
+          items:
+            type: string
+          description: >
+            Concepts from the concept DAG that must be in-scope before
+            this tool can be meaningfully called. Used to surface prerequisite
+            chains at inference time.
+          examples:
+            - [github.repo, github.issue]
+            - [slack.channel, slack.auth]
+
+        alternatives:
+          type: array
+          items:
+            type: string
+          description: >
+            Other tool_ids that address the same intent. Declaring alternatives
+            suppresses the overlap linter warning and documents the selection
+            criterion (via query_tips).
+          examples:
+            - [linear_create_issue, jira_create_issue]
+
+        composes_with:
+          type: array
+          items:
+            type: string
+          description: >
+            tool_ids that naturally follow this tool in a pipeline.
+            The linter validates that output_shape of this tool is compatible
+            with input_shape of each listed tool.
+          examples:
+            - [github_assign_issue, github_add_label]
+
+        input_shape:
+          type: object
+          description: >
+            Named input parameters with types. Used for compositional
+            contract validation. Types: string, integer, float, boolean,
+            array, object, url, file_path, tool_id.
+          additionalProperties:
+            type: string
+          examples:
+            - {repo: string, title: string, body: string}
+            - {channel_id: string, message: string, thread_ts: string}
+
+        output_shape:
+          type: object
+          description: >
+            Named output fields with types. The linter checks that
+            composes_with targets accept these fields as input.
+          additionalProperties:
+            type: string
+          examples:
+            - {issue_url: string, issue_number: integer}
+            - {message_ts: string, channel_id: string}
+
+        query_tips:
+          type: string
+          description: >
+            Disambiguation guidance injected into the system prompt when
+            the router detects ambiguity between alternatives.
+            Write from the perspective of the routing model.
+          examples:
+            - "Use when the repo is on GitHub. Not for Jira or Linear projects."
+            - "Prefer over search_web when the domain is technical documentation."
+
+        cost_hints:
+          type: object
+          description: >
+            Non-functional hints for orchestrator scheduling.
+          properties:
+            latency_ms:
+              type: integer
+              description: Typical round-trip latency in milliseconds.
+            tokens_consumed:
+              type: integer
+              description: Approximate tokens consumed per call (0 if external API).
+            rate_limit_rpm:
+              type: integer
+              description: Rate limit in requests per minute (if applicable).
+            idempotent:
+              type: boolean
+              description: True if calling the tool twice with the same args is safe.
+            side_effects:
+              type: array
+              items:
+                type: string
+              description: >
+                Side effects to flag to the user before calling.
+                Examples: [sends_email, modifies_database, creates_github_issue]
+
+  # ── Concepts ──────────────────────────────────────────────────────────────
+  concepts:
+    type: object
+    description: >
+      Concept DAG. Each node is a domain concept that tools can declare as a
+      prerequisite. The DAG enables prerequisite chain surfacing and gap detection.
+    additionalProperties:
+      type: object
+      required: [description]
+      properties:
+
+        description:
+          type: string
+          description: One-sentence definition of the concept.
+
+        prerequisites:
+          type: array
+          items:
+            type: string
+          description: >
+            Parent concepts that must be established before this concept
+            is meaningful. Forms the DAG edges.
+
+        examples:
+          type: array
+          items:
+            type: string
+          description: Concrete examples of this concept in practice.
+
+        scope:
+          type: string
+          enum: [global, domain, session]
+          description: >
+            How long the concept stays in scope once established.
+            global: permanent (e.g., auth credentials).
+            domain: within a task domain (e.g., current github.repo).
+            session: within a single conversation turn.
+
+  # ── Patterns ──────────────────────────────────────────────────────────────
+  patterns:
+    type: object
+    description: >
+      Named fan-out recipes. A pattern declares the canonical tool sequence
+      for a compound intent. The linter checks that patterns are internally
+      consistent and that all referenced tools are declared.
+    additionalProperties:
+      type: object
+      required: [intent_triggers, tool_sequence]
+      properties:
+
+        name:
+          type: string
+          description: Human-readable pattern name.
+
+        intent_triggers:
+          type: array
+          items:
+            type: string
+          description: >
+            Natural language phrases that should activate this pattern.
+            Used to train/evaluate the router.
+
+        tool_sequence:
+          type: array
+          items:
+            oneOf:
+              - type: string
+                description: Single tool_id (sequential step)
+              - type: array
+                items:
+                  type: string
+                description: List of tool_ids executed in parallel (fan-out)
+          description: >
+            Ordered sequence of steps. A step is either a single tool_id
+            (sequential) or an array of tool_ids (parallel fan-out).
+
+        merge_strategy:
+          type: string
+          enum: [first, all, ranked, custom]
+          description: >
+            How to merge results from a parallel fan-out step.
+            first: return first successful result.
+            all: return all results as a list.
+            ranked: return results sorted by a declared ranking field.
+            custom: merge logic is implemented in the runtime.
+
+        preconditions:
+          type: array
+          items:
+            type: string
+          description: >
+            concept_ids that must be in-scope before this pattern can fire.
+
+  # ── Properties ────────────────────────────────────────────────────────────
+  properties:
+    type: object
+    description: >
+      Registry-level governance assertions evaluated by fabric-lint.
+    properties:
+
+      mece_groups:
+        type: array
+        description: >
+          Declare groups of tools that should be MECE (mutually exclusive,
+          collectively exhaustive) for a given intent class.
+        items:
+          type: object
+          required: [intent_class, tools]
+          properties:
+            intent_class:
+              type: string
+              description: The intent class these tools collectively cover.
+            tools:
+              type: array
+              items:
+                type: string
+              description: tool_ids in this MECE group.
+            selection_criterion:
+              type: string
+              description: How to pick between them (injected as query_tip).
+
+      completeness_assertions:
+        type: array
+        description: >
+          Assert that every tool in a list is covered by at least one pattern.
+        items:
+          type: object
+          required: [scope, tools]
+          properties:
+            scope:
+              type: string
+              description: Human label for this completeness scope.
+            tools:
+              type: array
+              items:
+                type: string
+
+      coherence_rules:
+        type: array
+        description: >
+          Custom rules expressed as tool_id pairs that must not co-occur
+          in the same pattern step (conflicting tools).
+        items:
+          type: object
+          required: [tools, reason]
+          properties:
+            tools:
+              type: array
+              minItems: 2
+              items:
+                type: string
+            reason:
+              type: string
+              description: Why these tools conflict.

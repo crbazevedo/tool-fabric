@@ -1,0 +1,881 @@
+# CARLOS-OS .tool-fabric.yaml
+# Registry governance schema for CARLOS-OS — a multi-agent personal OS
+# with 95 tools across 6 domains: project-management, communication,
+# code, file-system, ai-inference, search, finance, calendar, devops.
+#
+# 15 tools are fully specified here as canonical examples.
+# The remaining 80 follow the same pattern — category, description,
+# concepts_required, alternatives, composes_with, shapes, hints.
+
+tools:
+
+  # ── Project Management ─────────────────────────────────────────────────────
+
+  github_create_issue:
+    category: project-management
+    description: >
+      Creates a new issue in a GitHub repository and returns the issue URL
+      and number. Use when tracking a bug, task, or feature request in a
+      GitHub-hosted project. Do NOT use for Linear or Jira projects.
+    concepts_required: [github.repo, github.auth]
+    alternatives: [linear_create_issue, jira_create_issue]
+    composes_with: [github_assign_issue, github_add_label, github_link_pr]
+    input_shape:
+      repo: string
+      title: string
+      body: string
+      labels: array
+    output_shape:
+      issue_url: string
+      issue_number: integer
+      repo: string
+    query_tips: >
+      Use when the project tracks work in GitHub Issues.
+      For Linear-managed projects (e.g. CARLOS-OS sprints), use linear_create_issue.
+    cost_hints:
+      latency_ms: 300
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [creates_github_issue, sends_github_notification]
+
+  linear_create_issue:
+    category: project-management
+    description: >
+      Creates a new issue in a Linear project and returns the issue URL
+      and identifier. Use when the team tracks work in Linear.
+      Do NOT use for GitHub Issues or Jira tickets.
+    concepts_required: [linear.project, linear.team, linear.auth]
+    alternatives: [github_create_issue, jira_create_issue]
+    composes_with: [linear_assign_issue, linear_set_priority, linear_add_to_cycle]
+    input_shape:
+      team_id: string
+      title: string
+      description: string
+      priority: integer
+    output_shape:
+      issue_url: string
+      issue_id: string
+      identifier: string
+    query_tips: >
+      CARLOS-OS sprints are managed in Linear (team: CARLOS).
+      Use this for all personal OS task tracking.
+    cost_hints:
+      latency_ms: 250
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [creates_linear_issue]
+
+  github_search_issues:
+    category: project-management
+    description: >
+      Searches GitHub issues and pull requests by query string and returns
+      a ranked list of matching items. Use to find existing issues before
+      creating a new one, or to audit open work. Returns up to 30 results.
+    concepts_required: [github.repo, github.auth]
+    alternatives: [linear_search_issues]
+    composes_with: [github_create_issue, github_close_issue]
+    input_shape:
+      query: string
+      repo: string
+      state: string
+    output_shape:
+      issues: array
+      total_count: integer
+    query_tips: >
+      Use before github_create_issue to check for duplicates.
+    cost_hints:
+      latency_ms: 400
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  # ── Communication ──────────────────────────────────────────────────────────
+
+  slack_send_message:
+    category: communication
+    description: >
+      Sends a message to a Slack channel or DM and returns the message
+      timestamp. Use for team notifications, status updates, or async
+      communication. Do NOT use for email — use gmail_send instead.
+    concepts_required: [slack.channel, slack.auth]
+    alternatives: [gmail_send, teams_send_message]
+    composes_with: [slack_add_reaction, slack_send_message_thread]
+    input_shape:
+      channel_id: string
+      text: string
+      thread_ts: string
+    output_shape:
+      message_ts: string
+      channel_id: string
+    query_tips: >
+      Use for Slack workspaces. CARLOS-OS cockpit uses #carlos-os channel.
+      For formal communications, use gmail_send.
+    cost_hints:
+      latency_ms: 150
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [sends_slack_message, triggers_slack_notification]
+
+  gmail_send:
+    category: communication
+    description: >
+      Sends an email via Gmail and returns the sent message ID.
+      Use for formal communications, external parties, or when a thread
+      record is needed. Do NOT use for internal team chat — use slack_send_message.
+    concepts_required: [gmail.auth, gmail.identity]
+    alternatives: [slack_send_message, outlook_send]
+    composes_with: [gmail_add_label, gmail_create_draft]
+    input_shape:
+      to: string
+      subject: string
+      body: string
+      cc: string
+      attachments: array
+    output_shape:
+      message_id: string
+      thread_id: string
+    query_tips: >
+      For external parties or formal records. For quick team comms, prefer Slack.
+    cost_hints:
+      latency_ms: 500
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [sends_email, creates_sent_record]
+
+  # ── Code & DevOps ──────────────────────────────────────────────────────────
+
+  bash_execute:
+    category: code
+    description: >
+      Executes a shell command and returns stdout, stderr, and exit code.
+      Use for system operations, file manipulation, and running scripts.
+      Commands run in the user's shell with their environment.
+      Do NOT use for Python code — use python_execute for isolated execution.
+    concepts_required: [system.shell, system.cwd]
+    alternatives: [python_execute]
+    composes_with: [file_read, file_write, bash_execute]
+    input_shape:
+      command: string
+      cwd: string
+      timeout_ms: integer
+    output_shape:
+      stdout: string
+      stderr: string
+      exit_code: integer
+    query_tips: >
+      Use for shell operations. For Python scripts, use python_execute
+      which provides better error isolation.
+    cost_hints:
+      latency_ms: 100
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [may_modify_filesystem, may_spawn_processes]
+
+  github_create_pr:
+    category: devops
+    description: >
+      Creates a pull request on GitHub and returns the PR URL and number.
+      Requires a branch with commits already pushed. Use after completing
+      a feature or fix branch. Do NOT use to push code — use bash_execute for git push.
+    concepts_required: [github.repo, github.branch, github.auth]
+    alternatives: []
+    composes_with: [github_request_review, github_add_label, slack_send_message]
+    input_shape:
+      repo: string
+      base_branch: string
+      head_branch: string
+      title: string
+      body: string
+    output_shape:
+      pr_url: string
+      pr_number: integer
+      repo: string
+    query_tips: >
+      Always run after pushing the feature branch. Link to the relevant
+      Linear issue in the PR body using the pattern "Closes LIN-{id}".
+    cost_hints:
+      latency_ms: 400
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [creates_github_pr, sends_github_notification, may_trigger_ci]
+
+  # ── Search & Research ──────────────────────────────────────────────────────
+
+  web_search:
+    category: search
+    description: >
+      Searches the web for current information and returns ranked results
+      with titles, URLs, and snippets. Use for facts not in training data,
+      current events, and external documentation. Prefer over web_fetch
+      when you need to discover the right URL rather than fetch a known one.
+    concepts_required: []
+    alternatives: [web_fetch, docs_search]
+    composes_with: [web_fetch]
+    input_shape:
+      query: string
+      num_results: integer
+    output_shape:
+      results: array
+      query: string
+    query_tips: >
+      Use when you need to find URLs. Once you have the URL, use web_fetch
+      to read the full page content.
+    cost_hints:
+      latency_ms: 800
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  web_fetch:
+    category: search
+    description: >
+      Fetches the full text content of a URL and returns it as markdown.
+      Use when you already have a URL and need the full page content.
+      Do NOT use for general search — use web_search to discover URLs first.
+    concepts_required: []
+    alternatives: [web_search]
+    composes_with: []
+    input_shape:
+      url: url
+      max_length: integer
+    output_shape:
+      content: string
+      url: url
+      title: string
+    query_tips: >
+      Use after web_search when you need full page content.
+      Not suitable for pages requiring authentication.
+    cost_hints:
+      latency_ms: 1200
+      tokens_consumed: 200
+      idempotent: true
+      side_effects: []
+
+  # ── File System ────────────────────────────────────────────────────────────
+
+  file_read:
+    category: file-system
+    description: >
+      Reads a file from the local filesystem and returns its contents.
+      Supports text files of any format. Use for config files, logs,
+      source code, and documents. Returns error if file does not exist.
+    concepts_required: [system.cwd]
+    alternatives: []
+    composes_with: [file_write, bash_execute]
+    input_shape:
+      path: file_path
+      offset: integer
+      limit: integer
+    output_shape:
+      content: string
+      path: file_path
+      lines: integer
+    query_tips: >
+      Always read before writing to avoid overwriting unknown content.
+    cost_hints:
+      latency_ms: 10
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  file_write:
+    category: file-system
+    description: >
+      Writes content to a file on the local filesystem. Overwrites if the
+      file exists. Use for creating or updating config files, scripts,
+      and generated content. Read the file first to avoid data loss.
+    concepts_required: [system.cwd]
+    alternatives: []
+    composes_with: [bash_execute, file_read]
+    input_shape:
+      path: file_path
+      content: string
+    output_shape:
+      path: file_path
+      bytes_written: integer
+    query_tips: >
+      Prefer edit_file for partial modifications to avoid full rewrites.
+    cost_hints:
+      latency_ms: 10
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [modifies_filesystem]
+
+  # ── AI Inference ───────────────────────────────────────────────────────────
+
+  claude_invoke:
+    category: ai-inference
+    description: >
+      Invokes Claude (Anthropic) for a generation task and returns the
+      response. Use for drafting, summarizing, classifying, or reasoning
+      tasks that require LLM capability. Specify the model explicitly.
+      Do NOT use for tasks that can be done with deterministic tools.
+    concepts_required: [anthropic.auth]
+    alternatives: [gemini_invoke, gpt_invoke]
+    composes_with: [file_write, slack_send_message, gmail_send]
+    input_shape:
+      model: string
+      prompt: string
+      system: string
+      max_tokens: integer
+    output_shape:
+      response: string
+      model: string
+      usage_tokens: integer
+    query_tips: >
+      Use claude-sonnet-4-6 for most tasks. claude-opus-4-6 for complex
+      multi-step reasoning. claude-haiku-4-5 for high-volume, low-latency tasks.
+    cost_hints:
+      latency_ms: 2000
+      tokens_consumed: 500
+      idempotent: false
+      side_effects: [consumes_api_budget]
+
+  # ── Calendar ───────────────────────────────────────────────────────────────
+
+  calendar_create_event:
+    category: calendar
+    description: >
+      Creates a new event on Google Calendar and returns the event URL.
+      Use for scheduling meetings, blocks, and reminders.
+      Do NOT use to find available times — use calendar_find_slot first.
+    concepts_required: [google.calendar, google.auth]
+    alternatives: []
+    composes_with: [calendar_invite_attendees, gmail_send]
+    input_shape:
+      title: string
+      start_datetime: string
+      end_datetime: string
+      attendees: array
+      description: string
+      calendar_id: string
+    output_shape:
+      event_url: string
+      event_id: string
+    query_tips: >
+      Always run calendar_find_slot before creating to avoid conflicts.
+    cost_hints:
+      latency_ms: 300
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [creates_calendar_event, sends_calendar_invites]
+
+  calendar_find_slot:
+    category: calendar
+    description: >
+      Queries Google Calendar for free slots in a given date range and
+      returns available time windows. Use before scheduling to avoid conflicts.
+    concepts_required: [google.calendar, google.auth]
+    alternatives: []
+    composes_with: [calendar_create_event]
+    input_shape:
+      date_range_start: string
+      date_range_end: string
+      duration_minutes: integer
+      calendar_ids: array
+    output_shape:
+      available_slots: array
+      queried_range: string
+    query_tips: >
+      Run before calendar_create_event to find the best slot.
+    cost_hints:
+      latency_ms: 400
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  # ── Finance ────────────────────────────────────────────────────────────────
+
+  notion_update_budget:
+    category: finance
+    description: >
+      Updates a budget row in the Notion Finance database and returns
+      the updated page ID. Use to record transactions, update forecasts,
+      or flag budget deviations. Do NOT use to read budget data — use
+      notion_query_database for reads.
+    concepts_required: [notion.database, notion.auth, finance.budget]
+    alternatives: []
+    composes_with: [slack_send_message, notion_query_database]
+    input_shape:
+      page_id: string
+      properties: object
+    output_shape:
+      page_id: string
+      last_edited: string
+    query_tips: >
+      Always query first to get the page_id before updating.
+    cost_hints:
+      latency_ms: 350
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [modifies_notion_database]
+
+  # ── Stub entries (pattern only, not fully specified) ──────────────────────
+  # The following tools follow the same structure. Fully specify before linting.
+
+  github_assign_issue:
+    category: project-management
+    description: "Assigns a GitHub issue to one or more users."
+    concepts_required: [github.repo, github.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {repo: string, issue_number: integer, assignees: array}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  github_add_label:
+    category: project-management
+    description: "Adds one or more labels to a GitHub issue or pull request."
+    concepts_required: [github.repo, github.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {repo: string, issue_number: integer, labels: array}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  github_link_pr:
+    category: project-management
+    description: "Links a pull request to an issue via closing keyword."
+    concepts_required: [github.repo, github.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {repo: string, pr_number: integer, issue_number: integer}
+    output_shape: {pr_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  github_close_issue:
+    category: project-management
+    description: "Closes a GitHub issue with an optional comment."
+    concepts_required: [github.repo, github.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {repo: string, issue_number: integer, comment: string}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: [closes_github_issue]}
+
+  github_request_review:
+    category: devops
+    description: "Requests review on a GitHub pull request from specified reviewers."
+    concepts_required: [github.repo, github.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {repo: string, pr_number: integer, reviewers: array}
+    output_shape: {pr_url: string}
+    cost_hints: {latency_ms: 250, idempotent: false, side_effects: [sends_github_notification]}
+
+  linear_assign_issue:
+    category: project-management
+    description: "Assigns a Linear issue to a team member."
+    concepts_required: [linear.project, linear.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {issue_id: string, assignee_id: string}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  linear_set_priority:
+    category: project-management
+    description: "Sets the priority level (0-4) of a Linear issue."
+    concepts_required: [linear.project, linear.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {issue_id: string, priority: integer}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  linear_add_to_cycle:
+    category: project-management
+    description: "Adds a Linear issue to the current sprint cycle."
+    concepts_required: [linear.project, linear.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {issue_id: string, cycle_id: string}
+    output_shape: {issue_url: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  linear_search_issues:
+    category: project-management
+    description: "Searches Linear issues by query string within a team."
+    concepts_required: [linear.project, linear.auth]
+    alternatives: [github_search_issues]
+    composes_with: []
+    input_shape: {query: string, team_id: string, state: string}
+    output_shape: {issues: array, total_count: integer}
+    query_tips: "Use for Linear-tracked work. For GitHub issues, use github_search_issues."
+    cost_hints: {latency_ms: 300, idempotent: true, side_effects: []}
+
+  slack_add_reaction:
+    category: communication
+    description: "Adds an emoji reaction to a Slack message."
+    concepts_required: [slack.channel, slack.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {channel_id: string, message_ts: string, emoji: string}
+    output_shape: {ok: boolean}
+    cost_hints: {latency_ms: 100, idempotent: true, side_effects: [sends_slack_reaction]}
+
+  slack_send_message_thread:
+    category: communication
+    description: "Sends a threaded reply to a Slack message."
+    concepts_required: [slack.channel, slack.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {channel_id: string, thread_ts: string, text: string}
+    output_shape: {message_ts: string}
+    cost_hints: {latency_ms: 150, idempotent: false, side_effects: [sends_slack_message]}
+
+  gmail_add_label:
+    category: communication
+    description: "Applies a label to a Gmail message or thread."
+    concepts_required: [gmail.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {message_id: string, label_ids: array}
+    output_shape: {message_id: string}
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: [modifies_gmail_label]}
+
+  gmail_create_draft:
+    category: communication
+    description: "Creates a Gmail draft without sending it."
+    concepts_required: [gmail.auth, gmail.identity]
+    alternatives: []
+    composes_with: [gmail_send]
+    input_shape: {to: string, subject: string, body: string}
+    output_shape: {draft_id: string}
+    cost_hints: {latency_ms: 300, idempotent: false, side_effects: [creates_gmail_draft]}
+
+  notion_query_database:
+    category: finance
+    description: "Queries a Notion database with filters and returns matching pages."
+    concepts_required: [notion.database, notion.auth]
+    alternatives: []
+    composes_with: [notion_update_budget]
+    input_shape: {database_id: string, filter: object, sorts: array}
+    output_shape: {pages: array, total: integer}
+    cost_hints: {latency_ms: 400, idempotent: true, side_effects: []}
+
+  calendar_invite_attendees:
+    category: calendar
+    description: "Adds attendees to an existing Google Calendar event."
+    concepts_required: [google.calendar, google.auth]
+    alternatives: []
+    composes_with: []
+    input_shape: {event_id: string, calendar_id: string, attendees: array}
+    output_shape: {event_url: string}
+    cost_hints: {latency_ms: 300, idempotent: false, side_effects: [sends_calendar_invites]}
+
+  python_execute:
+    category: code
+    description: >
+      Executes Python code in an isolated subprocess and returns stdout,
+      stderr, and exit code. Use for data processing, calculations, and
+      script execution. Prefer over bash_execute for Python-specific tasks.
+    concepts_required: [system.cwd]
+    alternatives: [bash_execute]
+    composes_with: [file_write]
+    input_shape: {code: string, timeout_ms: integer}
+    output_shape: {stdout: string, stderr: string, exit_code: integer}
+    query_tips: "Use for Python code. For shell commands, use bash_execute."
+    cost_hints: {latency_ms: 500, idempotent: false, side_effects: [may_modify_filesystem]}
+
+  docs_search:
+    category: search
+    description: "Searches internal documentation and returns matching sections."
+    concepts_required: []
+    alternatives: [web_search]
+    composes_with: []
+    input_shape: {query: string, collection: string}
+    output_shape: {results: array}
+    query_tips: "Use for internal docs. For public web content, use web_search."
+    cost_hints: {latency_ms: 200, idempotent: true, side_effects: []}
+
+  gemini_invoke:
+    category: ai-inference
+    description: "Invokes Google Gemini for generation or multimodal tasks."
+    concepts_required: [google.ai_auth]
+    alternatives: [claude_invoke, gpt_invoke]
+    composes_with: [file_write, slack_send_message]
+    input_shape: {model: string, prompt: string, max_tokens: integer}
+    output_shape: {response: string, model: string, usage_tokens: integer}
+    query_tips: "Prefer for Google Workspace integration tasks or when Gemini context is needed."
+    cost_hints: {latency_ms: 1800, tokens_consumed: 400, idempotent: false, side_effects: [consumes_api_budget]}
+
+  gpt_invoke:
+    category: ai-inference
+    description: "Invokes OpenAI GPT for generation tasks."
+    concepts_required: [openai.auth]
+    alternatives: [claude_invoke, gemini_invoke]
+    composes_with: [file_write, slack_send_message]
+    input_shape: {model: string, prompt: string, max_tokens: integer}
+    output_shape: {response: string, model: string, usage_tokens: integer}
+    query_tips: "Use when OpenAI-specific capabilities are required (e.g. DALL-E, Whisper)."
+    cost_hints: {latency_ms: 2200, tokens_consumed: 500, idempotent: false, side_effects: [consumes_api_budget]}
+
+# ── Concepts ────────────────────────────────────────────────────────────────
+
+concepts:
+
+  github.auth:
+    description: "Authenticated GitHub API session with a valid token."
+    prerequisites: []
+    examples: ["GITHUB_TOKEN env var set", "gh auth login completed"]
+    scope: global
+
+  github.repo:
+    description: "A GitHub repository identified by owner/repo slug."
+    prerequisites: [github.auth]
+    examples: ["anthropics/claude-code", "crbazevedo/tool-fabric"]
+    scope: domain
+
+  github.branch:
+    description: "A git branch in a GitHub repository."
+    prerequisites: [github.repo]
+    examples: ["main", "feature/tool-fabric-v2"]
+    scope: session
+
+  github.issue:
+    description: "A trackable work item in a GitHub repository."
+    prerequisites: [github.repo]
+    examples: ["Issue #42: fix lint check for cycles"]
+    scope: session
+
+  linear.auth:
+    description: "Authenticated Linear API session."
+    prerequisites: []
+    examples: ["LINEAR_API_KEY env var set"]
+    scope: global
+
+  linear.team:
+    description: "A Linear team identified by team_id."
+    prerequisites: [linear.auth]
+    examples: ["CARLOS (personal OS team)", "KORZA (startup team)"]
+    scope: domain
+
+  linear.project:
+    description: "A Linear project within a team."
+    prerequisites: [linear.team]
+    examples: ["M5 Smart Notes Engine"]
+    scope: domain
+
+  slack.auth:
+    description: "Authenticated Slack API bot or user session."
+    prerequisites: []
+    examples: ["SLACK_BOT_TOKEN env var set"]
+    scope: global
+
+  slack.channel:
+    description: "A Slack channel identified by channel_id."
+    prerequisites: [slack.auth]
+    examples: ["#carlos-os (C012ABC3)", "#engineering"]
+    scope: domain
+
+  gmail.auth:
+    description: "Authenticated Gmail API session via OAuth2."
+    prerequisites: []
+    examples: ["credentials.json present", "token.json refreshed"]
+    scope: global
+
+  gmail.identity:
+    description: "The authenticated user's Gmail address and display name."
+    prerequisites: [gmail.auth]
+    examples: ["carlos@example.com"]
+    scope: global
+
+  google.calendar:
+    description: "Access to a Google Calendar, identified by calendar_id."
+    prerequisites: [google.auth]
+    examples: ["primary", "carlos@example.com"]
+    scope: domain
+
+  google.auth:
+    description: "Authenticated Google API session via OAuth2."
+    prerequisites: []
+    examples: ["google_credentials.json present"]
+    scope: global
+
+  google.ai_auth:
+    description: "Authenticated Google AI / Gemini API session."
+    prerequisites: []
+    examples: ["GOOGLE_AI_API_KEY env var set"]
+    scope: global
+
+  notion.auth:
+    description: "Authenticated Notion API session."
+    prerequisites: []
+    examples: ["NOTION_TOKEN env var set"]
+    scope: global
+
+  notion.database:
+    description: "A Notion database identified by database_id."
+    prerequisites: [notion.auth]
+    examples: ["Finance DB (id: abc123)", "Tasks DB (id: def456)"]
+    scope: domain
+
+  finance.budget:
+    description: "An active budget in the finance tracking system."
+    prerequisites: [notion.database]
+    examples: ["Monthly budget April 2026", "API cost budget"]
+    scope: domain
+
+  anthropic.auth:
+    description: "Authenticated Anthropic API session."
+    prerequisites: []
+    examples: ["ANTHROPIC_API_KEY env var set"]
+    scope: global
+
+  openai.auth:
+    description: "Authenticated OpenAI API session."
+    prerequisites: []
+    examples: ["OPENAI_API_KEY env var set"]
+    scope: global
+
+  system.shell:
+    description: "An active shell session with environment variables set."
+    prerequisites: []
+    examples: ["zsh session in /Users/crbazevedo/Documents"]
+    scope: session
+
+  system.cwd:
+    description: "A known current working directory."
+    prerequisites: [system.shell]
+    examples: ["/Users/crbazevedo/Documents/tool-fabric"]
+    scope: session
+
+# ── Patterns ────────────────────────────────────────────────────────────────
+
+patterns:
+
+  triage_and_track:
+    name: "Triage a reported issue and create a tracking ticket"
+    intent_triggers:
+      - "create an issue for this bug"
+      - "track this in Linear"
+      - "file a GitHub issue"
+      - "triage this problem"
+    tool_sequence:
+      - github_search_issues
+      - linear_create_issue
+      - [linear_assign_issue, linear_set_priority]
+      - slack_send_message
+    merge_strategy: all
+    preconditions: [github.auth, linear.project, slack.channel]
+
+  ship_feature:
+    name: "Complete feature: PR + review request + team notification"
+    intent_triggers:
+      - "open a pull request"
+      - "create a PR for this branch"
+      - "ship this feature"
+      - "submit for review"
+    tool_sequence:
+      - github_create_pr
+      - github_request_review
+      - slack_send_message
+    merge_strategy: all
+    preconditions: [github.repo, github.branch, slack.channel]
+
+  schedule_meeting:
+    name: "Find a slot and create a calendar event"
+    intent_triggers:
+      - "schedule a meeting"
+      - "find a time to meet"
+      - "book a slot with"
+      - "set up a call"
+    tool_sequence:
+      - calendar_find_slot
+      - calendar_create_event
+      - [calendar_invite_attendees, gmail_send]
+    merge_strategy: all
+    preconditions: [google.calendar]
+
+  research_and_draft:
+    name: "Research a topic and draft a response or document"
+    intent_triggers:
+      - "research and draft"
+      - "look up and write"
+      - "find information and summarize"
+    tool_sequence:
+      - [web_search, docs_search]
+      - web_fetch
+      - claude_invoke
+      - file_write
+    merge_strategy: all
+    preconditions: [anthropic.auth, system.cwd]
+
+  budget_update:
+    name: "Query budget and record a transaction"
+    intent_triggers:
+      - "record a transaction"
+      - "update the budget"
+      - "log this expense"
+    tool_sequence:
+      - notion_query_database
+      - notion_update_budget
+      - slack_send_message
+    merge_strategy: all
+    preconditions: [notion.database, finance.budget, slack.channel]
+
+  close_sprint_issue:
+    name: "Close a Linear issue and notify the team"
+    intent_triggers:
+      - "mark as done"
+      - "close this issue"
+      - "complete this task"
+    tool_sequence:
+      - linear_set_priority
+      - slack_send_message
+    merge_strategy: all
+    preconditions: [linear.project, slack.channel]
+
+# ── Properties ──────────────────────────────────────────────────────────────
+
+properties:
+
+  mece_groups:
+    - intent_class: "create a project tracking issue"
+      tools: [github_create_issue, linear_create_issue]
+      selection_criterion: >
+        Use github_create_issue for GitHub-hosted repositories.
+        Use linear_create_issue for CARLOS-OS sprint and project tracking.
+
+    - intent_class: "send a message to a person or team"
+      tools: [slack_send_message, gmail_send]
+      selection_criterion: >
+        Use slack_send_message for internal, real-time team communication.
+        Use gmail_send for external parties, formal records, or when a thread history is required.
+
+    - intent_class: "invoke an LLM for generation"
+      tools: [claude_invoke, gemini_invoke, gpt_invoke]
+      selection_criterion: >
+        Default to claude_invoke (claude-sonnet-4-6).
+        Use gemini_invoke for Google Workspace integration tasks.
+        Use gpt_invoke only when OpenAI-specific capabilities are required.
+
+  completeness_assertions:
+    - scope: "core project management"
+      tools:
+        - github_create_issue
+        - github_search_issues
+        - github_assign_issue
+        - github_add_label
+        - github_close_issue
+        - linear_create_issue
+        - linear_assign_issue
+        - linear_set_priority
+
+    - scope: "core communication"
+      tools:
+        - slack_send_message
+        - gmail_send
+        - gmail_create_draft
+
+  coherence_rules:
+    - tools: [github_create_issue, linear_create_issue]
+      reason: >
+        These tools create duplicate tickets for the same intent if called together.
+        A single intent should use one or the other, not both.
+
+    - tools: [gmail_send, gmail_create_draft]
+      reason: >
+        gmail_send sends immediately; gmail_create_draft does not.
+        Never call both for the same message — it creates a duplicate.
