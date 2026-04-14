@@ -9,6 +9,7 @@ Usage:
 
 import sys
 import json
+from collections import Counter
 from pathlib import Path
 
 import click
@@ -177,18 +178,45 @@ def _build_markdown_report(violations, registry: "Registry") -> str:
     tools = registry.raw.get("tools", {})
     patterns = registry.raw.get("patterns", {})
     concepts = registry.raw.get("concepts", {})
-
-    lines = [
-        "# tool-fabric Registry Audit",
-        "",
-        f"**File:** `{registry.source_file}`  ",
-        f"**Tools:** {len(tools)}  |  **Patterns:** {len(patterns)}  |  **Concepts:** {len(concepts)}",
-        "",
-    ]
+    props = registry.raw.get("properties") or {}
+    mece_groups = props.get("mece_groups") or []
 
     errors = [v for v in violations if v.severity == Severity.ERROR]
     warnings = [v for v in violations if v.severity == Severity.WARNING]
     infos = [v for v in violations if v.severity == Severity.INFO]
+
+    lines = [
+        "# tool-fabric Registry Audit",
+        "",
+        f"**File:** `{registry.source_file}`",
+        "",
+        "## Summary",
+        "",
+        "| Metric | Count |",
+        "|--------|-------|",
+        f"| Tools | {len(tools)} |",
+        f"| Concepts | {len(concepts)} |",
+        f"| Patterns | {len(patterns)} |",
+        f"| MECE groups | {len(mece_groups)} |",
+        f"| Errors | {len(errors)} |",
+        f"| Warnings | {len(warnings)} |",
+        f"| Info | {len(infos)} |",
+        f"| **Total violations** | **{len(violations)}** |",
+        "",
+    ]
+
+    if violations:
+        code_counts = Counter(v.code for v in violations)
+        severity_for = {v.code: v.severity.name for v in violations}
+        lines += [
+            "## Violation Breakdown",
+            "",
+            "| Code | Severity | Count |",
+            "|------|----------|-------|",
+        ]
+        for code in sorted(code_counts):
+            lines.append(f"| {code} | {severity_for[code]} | {code_counts[code]} |")
+        lines.append("")
 
     def section(title, items, icon):
         if not items:
@@ -204,7 +232,7 @@ def _build_markdown_report(violations, registry: "Registry") -> str:
     section("Info", infos, "🔵")
 
     if not violations:
-        lines.append("## No violations found.")
+        lines.append("✅ No violations found.")
 
     return "\n".join(lines)
 

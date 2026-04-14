@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import enum
 import math
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -581,5 +582,202 @@ def check_missing_cost_hints(registry: Registry) -> list[Violation]:
                 ),
                 tool_id=tool_id,
             ))
+
+    return violations
+
+
+# ── I004 — Uncovered Concept ──────────────────────────────────────────────────
+
+# Synonym clusters for common registry vocabulary.
+# When words from the same cluster appear in descriptions across tools in the
+# same MECE group, it signals inconsistent terminology (W006).
+_SYNONYM_CLUSTERS: list[frozenset[str]] = [
+    frozenset({"issue", "ticket", "task"}),
+    frozenset({"message", "email", "notification"}),
+    frozenset({"status", "state", "condition", "situation"}),
+    frozenset({"auth", "authentication", "credentials", "token"}),
+    frozenset({"repository", "repo"}),
+    frozenset({"retrieve", "fetch", "get"}),
+    frozenset({"send", "post", "deliver"}),
+    frozenset({"create", "make", "generate"}),
+]
+
+
+def _synonym_cluster_for(word: str) -> frozenset[str] | None:
+    w = word.lower()
+    for cluster in _SYNONYM_CLUSTERS:
+        if w in cluster:
+            return cluster
+    return None
+
+
+@check
+def check_concept_coverage(registry: Registry) -> list[Violation]:
+    """
+    I004: A concept defined in the concept DAG is not referenced by any tool.
+
+    Algorithm:
+    - Collect all concept_ids from concepts section.
+    - Collect all concept_ids referenced in tools[*].concepts_required.
+    - Any defined-but-unreferenced concept is flagged as an I004 info:
+      either a missing tool (coverage gap) or a stale concept (cleanup needed).
+    """
+    defined_concepts = set(registry.concepts.keys())
+    referenced: set[str] = set()
+
+    for tdata in registry.tools.values():
+        for cid in (tdata.get("concepts_required") or []):
+            referenced.add(cid)
+
+    violations = []
+    for cid in sorted(defined_concepts - referenced):
+        violations.append(Violation(
+            code="I004",
+            severity=Severity.INFO,
+            message=(
+                f"Completeness gap: concept '{cid}' is defined in the DAG but "
+                f"no tool declares it in concepts_required. "
+                f"Add a tool that requires it, or remove the concept."
+            ),
+            concept_id=cid,
+        ))
+
+    return violations
+
+
+# ── W006 — Vocabulary Incoherence ─────────────────────────────────────────────
+
+
+@check
+def check_vocabulary_coherence(registry: Registry) -> list[Violation]:
+    """
+    W006: Tools in the same MECE group use inconsistent terminology.
+
+    Algorithm:
+    - For each mece_group in properties.mece_groups:
+      - Collect and tokenize descriptions for all tools in the group.
+      - For each synonym cluster, record which terms each tool uses.
+      - If multiple distinct synonyms from the same cluster appear across
+        different tools in the group, emit WARNING.
+
+    Rationale (formal framework §3.5):
+    If the concept DAG names a concept 'X', all tool descriptions should refer
+    to X consistently. Mixed synonyms increase H(T|D) by adding ambiguity that
+    purely statistical selection cannot resolve.
+    """
+    mece_groups = (registry.properties.get("mece_groups") or [])
+    tools = registry.tools
+    violations = []
+
+    for group in mece_groups:
+        intent_class = group.get("intent_class", "unnamed group")
+        group_tool_ids = group.get("tools") or []
+
+        # Collect word sets per tool in this group
+        tool_words: dict[str, set[str]] = {}
+        for tid in group_tool_ids:
+            if tid in tools:
+                desc = (tools[tid].get("description") or "").strip().lower()
+                tool_words[tid] = set(re.findall(r"\b[a-z]+\b", desc))
+
+        if len(tool_words) < 2:
+            continue
+
+        # Map each synonym cluster → {tool_id: [matched words]}
+        cluster_hits: dict[frozenset, dict[str, list[str]]] = {}
+        for tid, words in tool_words.items():
+            for word in words:
+                cluster = _synonym_cluster_for(word)
+                if cluster is None:
+                    continue
+                cluster_hits.setdefault(cluster, {}).setdefault(tid, []).append(word)
+
+        # Flag clusters where different tools use different synonyms
+        for cluster, tool_to_terms in cluster_hits.items():
+            if len(tool_to_terms) < 2:
+                continue  # Only one tool uses this cluster — no inconsistency
+            all_terms = {t for terms in tool_to_terms.values() for t in terms}
+            if len(all_terms) <= 1:
+                continue  # All tools use the same term — consistent
+
+            tool_list = ", ".join(
+                f"'{tid}'→{sorted(set(ts))}"
+                for tid, ts in sorted(tool_to_terms.items())
+            )
+            violations.append(Violation(
+                code="W006",
+                severity=Severity.WARNING,
+                message=(
+                    f"Vocabulary inconsistency in MECE group '{intent_class}': "
+                    f"mixed synonyms {sorted(all_terms)} detected. "
+                    f"Per-tool usage: {tool_list}. "
+                    f"Use the concept DAG's canonical term throughout."
+                ),
+            ))
+
+    return violations
+
+
+# ── W007 — Minimality Violation ───────────────────────────────────────────────
+
+
+@check
+def check_mergeable_tools(registry: Registry) -> list[Violation]:
+    """
+    W007: Two tools declared as alternatives have identical input/output shapes.
+
+    Algorithm:
+    - For each pair (A, B) where B ∈ alternatives(A):
+      - Compare input_shape keys+types and output_shape keys+types.
+      - If both shapes are structurally identical, emit WARNING.
+
+    Rationale (formal framework §3.5 — Minimality):
+    If two tools have the same intent distribution (same shapes, same purpose)
+    they inflate H(T|D) without covering additional intents. They should either
+    be merged or distinguished by a shape-level field or query_tips.
+    """
+    tools = registry.tools
+    alternatives_map = _build_alternatives_map(tools)
+    violations = []
+    seen: set[frozenset] = set()
+
+    for a, a_alts in alternatives_map.items():
+        for b in a_alts:
+            if b not in tools:
+                continue
+            pair = frozenset({a, b})
+            if pair in seen:
+                continue
+            seen.add(pair)
+
+            a_in = tools[a].get("input_shape") or {}
+            b_in = tools[b].get("input_shape") or {}
+            a_out = tools[a].get("output_shape") or {}
+            b_out = tools[b].get("output_shape") or {}
+
+            if not (a_in and a_out and b_in and b_out):
+                continue  # Can't compare without shapes
+
+            input_match = (
+                set(a_in.keys()) == set(b_in.keys())
+                and all(a_in[k] == b_in[k] for k in a_in)
+            )
+            output_match = (
+                set(a_out.keys()) == set(b_out.keys())
+                and all(a_out[k] == b_out[k] for k in a_out)
+            )
+
+            if input_match and output_match:
+                violations.append(Violation(
+                    code="W007",
+                    severity=Severity.WARNING,
+                    message=(
+                        f"Minimality violation: '{a}' and '{b}' are declared as "
+                        f"alternatives and have identical input/output shapes "
+                        f"(input: {sorted(a_in.keys())}, output: {sorted(a_out.keys())}). "
+                        f"Consider merging into one tool or adding a distinguishing field."
+                    ),
+                    tool_id=a,
+                ))
 
     return violations
