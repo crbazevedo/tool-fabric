@@ -6,6 +6,8 @@ Fixture conventions:
 - Each test function covers a single check, with a passing case and failing case.
 - Tests exercise the checks via run_checks() as well as the individual functions
   to ensure they are properly registered.
+
+Covers: E001-E005, W001, W003-W007, I001-I004 and the Jaccard similarity backend.
 """
 
 from __future__ import annotations
@@ -28,8 +30,10 @@ from linter.checks import (
     check_orphan_tools,
     check_pattern_tool_references,
     check_undeclared_overlap,
+    check_undefined_alternative_references,
     check_vocabulary_coherence,
     run_checks,
+    _build_similarity_fn,
 )
 
 
@@ -47,6 +51,32 @@ def make_registry(tools=None, concepts=None, patterns=None, properties=None) -> 
 
 def codes(violations: list[Violation]) -> list[str]:
     return [v.code for v in violations]
+
+
+# ── Jaccard similarity backend ─────────────────────────────────────────────────
+
+
+class TestJaccardSimilarity:
+    def test_identical_descriptions(self):
+        """Identical token sets → similarity = 1.0."""
+        fn = _build_similarity_fn({"a": "foo bar baz", "b": "foo bar baz"})
+        assert fn("a", "b") == pytest.approx(1.0)
+
+    def test_disjoint_descriptions(self):
+        """Completely disjoint token sets → similarity = 0.0."""
+        fn = _build_similarity_fn({"a": "foo bar baz", "b": "qux quux corge"})
+        assert fn("a", "b") == pytest.approx(0.0)
+
+    def test_partial_overlap(self):
+        """Partial overlap → correct Jaccard score."""
+        # intersection={a,b,c}=3, union={a,b,c,d,e}=5 → 0.6
+        fn = _build_similarity_fn({"x": "a b c", "y": "a b c d e"})
+        assert fn("x", "y") == pytest.approx(3 / 5)
+
+    def test_empty_descriptions(self):
+        """Both empty → similarity = 1.0 (both cover same empty set)."""
+        fn = _build_similarity_fn({"a": "", "b": ""})
+        assert fn("a", "b") == pytest.approx(1.0)
 
 
 # ── E001 — Undeclared Overlap ─────────────────────────────────────────────────
@@ -216,6 +246,17 @@ class TestConceptCycles:
         violations = check_concept_cycles(make_registry(concepts=concepts))
         assert "E004" in codes(violations)
 
+    def test_diamond_dag_no_cycle(self):
+        # A → B, A → C, B → D, C → D — valid diamond, no cycle
+        concepts = {
+            "A": {"prerequisites": ["B", "C"]},
+            "B": {"prerequisites": ["D"]},
+            "C": {"prerequisites": ["D"]},
+            "D": {"prerequisites": []},
+        }
+        violations = check_concept_cycles(make_registry(concepts=concepts))
+        assert "E004" not in codes(violations)
+
 
 # ── E005 — Undeclared Tool in Pattern ─────────────────────────────────────────
 
@@ -245,6 +286,12 @@ class TestPatternToolReferences:
         tools = {"tool_a": {}}
         violations = check_pattern_tool_references(make_registry(tools=tools, patterns=patterns))
         assert "E005" in codes(violations)
+
+    def test_no_violation_when_all_tools_declared(self):
+        patterns = {"p1": {"tool_sequence": ["tool_a"]}}
+        tools = {"tool_a": {}}
+        violations = check_pattern_tool_references(make_registry(tools=tools, patterns=patterns))
+        assert "E005" not in codes(violations)
 
 
 # ── W001 — Orphan Tool ────────────────────────────────────────────────────────
@@ -295,6 +342,51 @@ class TestMissingConcepts:
         violations = check_missing_concepts(make_registry(tools=tools))
         assert "W004" not in codes(violations)
 
+    def test_no_violation_for_trivial_category(self):
+        tools = {
+            "tool_a": {"category": "file-system", "concepts_required": []},
+        }
+        violations = check_missing_concepts(make_registry(tools=tools))
+        assert "W004" not in codes(violations)
+
+
+# ── W005 — Undefined Alternative Reference ────────────────────────────────────
+
+
+class TestUndefinedAlternativeReferences:
+    def test_alternative_references_undefined_tool(self):
+        """alternatives references a tool not in the registry → W005."""
+        tools = {
+            "tool_a": {
+                "category": "project-management",
+                "description": "creates an issue",
+                "alternatives": ["nonexistent_tool"],
+            }
+        }
+        violations = check_undefined_alternative_references(make_registry(tools=tools))
+        assert any(v.code == "W005" and "nonexistent_tool" in v.message for v in violations)
+
+    def test_no_violation_when_all_alternatives_defined(self):
+        """All alternatives are defined → no W005."""
+        tools = {
+            "tool_a": {
+                "category": "utility",
+                "description": "does X",
+                "alternatives": ["tool_b"],
+            },
+            "tool_b": {
+                "category": "utility",
+                "description": "does X differently",
+                "alternatives": ["tool_a"],
+            },
+        }
+        assert check_undefined_alternative_references(make_registry(tools=tools)) == []
+
+    def test_no_alternatives_no_violation(self):
+        """No alternatives declared → no W005."""
+        tools = {"tool_a": {"category": "utility", "alternatives": []}}
+        assert check_undefined_alternative_references(make_registry(tools=tools)) == []
+
 
 # ── I001 — Short Description ──────────────────────────────────────────────────
 
@@ -322,6 +414,11 @@ class TestDescriptionQuality:
         }
         violations = check_description_quality(make_registry(tools=tools))
         assert "I001" not in codes(violations)
+
+    def test_missing_description_message_contains_missing(self):
+        tools = {"tool_a": {"category": "utility"}}
+        violations = check_description_quality(make_registry(tools=tools))
+        assert any(v.code == "I001" and "missing" in v.message for v in violations)
 
 
 # ── I002 — Missing query_tips for alternatives ────────────────────────────────
@@ -596,3 +693,8 @@ class TestRunChecks:
         violations = run_checks(reg)
         errors = [v for v in violations if v.severity == Severity.ERROR]
         assert errors == []
+
+    def test_returns_list(self):
+        """run_checks always returns a list."""
+        reg = make_registry()
+        assert isinstance(run_checks(reg), list)

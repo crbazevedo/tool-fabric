@@ -113,6 +113,9 @@ A tool participates in a `composes_with` relationship but has no type declaratio
 **W004 — Missing concepts_required**  
 A tool has a non-trivial domain (not `search`, `file-system`, `utility`) but declares no `concepts_required`.
 
+**W005 — Undefined Alternative Reference**  
+A tool declares an `alternatives` entry that is not defined in the `tools` section. The router cannot look up the description or `query_tips` of an undefined alternative. Add a stub entry to document the selection criterion, or remove the reference.
+
 **I001 — Short Description**  
 A tool description is < 20 words. Likely to cause ambiguity at scale.
 

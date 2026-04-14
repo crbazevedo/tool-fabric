@@ -559,6 +559,38 @@ def check_missing_query_tips(registry: Registry) -> list[Violation]:
     return violations
 
 
+# ── W005 — Undefined Alternative Reference ────────────────────────────────────
+
+
+@check
+def check_undefined_alternative_references(registry: Registry) -> list[Violation]:
+    """
+    W005: A tool declares an alternative tool_id that is not defined in the registry.
+
+    If an alternative is referenced but not defined, the router cannot look up its
+    description or query_tips. This may be intentional (external tools you don't own)
+    but warrants an explicit stub entry to document the selection criterion.
+    """
+    tools = registry.tools
+    violations = []
+
+    for tool_id, tdata in tools.items():
+        alternatives = tdata.get("alternatives") or []
+        for alt_id in alternatives:
+            if alt_id not in tools:
+                violations.append(Violation(
+                    code="W005",
+                    severity=Severity.WARNING,
+                    message=(
+                        f"'{tool_id}' declares alternative '{alt_id}' which is not "
+                        f"defined in the registry. Add a stub entry or remove the reference."
+                    ),
+                    tool_id=tool_id,
+                ))
+
+    return violations
+
+
 # ── I003 — Missing cost_hints ─────────────────────────────────────────────────
 
 
