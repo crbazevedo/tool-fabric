@@ -1,0 +1,206 @@
+{
+  "experiment": "multi_model_scale_benchmark",
+  "hypothesis": "governance-enriched descriptions help weaker models more at scale",
+  "models_tested": [
+    "claude-haiku-4-5-20251001",
+    "claude-sonnet-4-6",
+    "claude-opus-4-6"
+  ],
+  "n_queries": 50,
+  "conditions": [
+    "old_41",
+    "old_150",
+    "new_41",
+    "new_150"
+  ],
+  "results": [
+    {
+      "model": "haiku",
+      "model_id": "claude-haiku-4-5-20251001",
+      "condition": "old_41",
+      "n_tools": 41,
+      "desc_version": "old",
+      "hit@1": 0.74,
+      "hit@3": 0.74,
+      "mrr": 0.74,
+      "precision@3": 0.2466,
+      "recall@3": 0.74
+    },
+    {
+      "model": "haiku",
+      "model_id": "claude-haiku-4-5-20251001",
+      "condition": "old_150",
+      "n_tools": 150,
+      "desc_version": "old",
+      "hit@1": 0.52,
+      "hit@3": 0.54,
+      "mrr": 0.53,
+      "precision@3": 0.18,
+      "recall@3": 0.54
+    },
+    {
+      "model": "haiku",
+      "model_id": "claude-haiku-4-5-20251001",
+      "condition": "new_41",
+      "n_tools": 41,
+      "desc_version": "new",
+      "hit@1": 0.8,
+      "hit@3": 0.84,
+      "mrr": 0.82,
+      "precision@3": 0.28,
+      "recall@3": 0.84
+    },
+    {
+      "model": "haiku",
+      "model_id": "claude-haiku-4-5-20251001",
+      "condition": "new_150",
+      "n_tools": 150,
+      "desc_version": "new",
+      "hit@1": 0.66,
+      "hit@3": 0.82,
+      "mrr": 0.74,
+      "precision@3": 0.2733,
+      "recall@3": 0.82
+    },
+    {
+      "model": "sonnet",
+      "model_id": "claude-sonnet-4-6",
+      "condition": "old_41",
+      "n_tools": 41,
+      "desc_version": "old",
+      "hit@1": 0.76,
+      "hit@3": 0.76,
+      "mrr": 0.76,
+      "precision@3": 0.2533,
+      "recall@3": 0.76
+    },
+    {
+      "model": "sonnet",
+      "model_id": "claude-sonnet-4-6",
+      "condition": "old_150",
+      "n_tools": 150,
+      "desc_version": "old",
+      "hit@1": 0.5,
+      "hit@3": 0.5,
+      "mrr": 0.5,
+      "precision@3": 0.1666,
+      "recall@3": 0.5
+    },
+    {
+      "model": "sonnet",
+      "model_id": "claude-sonnet-4-6",
+      "condition": "new_41",
+      "n_tools": 41,
+      "desc_version": "new",
+      "hit@1": 0.66,
+      "hit@3": 0.74,
+      "mrr": 0.6967,
+      "precision@3": 0.2466,
+      "recall@3": 0.74
+    },
+    {
+      "model": "sonnet",
+      "model_id": "claude-sonnet-4-6",
+      "condition": "new_150",
+      "n_tools": 150,
+      "desc_version": "new",
+      "hit@1": 0.5,
+      "hit@3": 0.64,
+      "mrr": 0.5633,
+      "precision@3": 0.2133,
+      "recall@3": 0.64
+    },
+    {
+      "model": "opus",
+      "model_id": "claude-opus-4-6",
+      "condition": "old_41",
+      "n_tools": 41,
+      "desc_version": "old",
+      "hit@1": 0.74,
+      "hit@3": 0.76,
+      "mrr": 0.7467,
+      "precision@3": 0.2533,
+      "recall@3": 0.76
+    },
+    {
+      "model": "opus",
+      "model_id": "claude-opus-4-6",
+      "condition": "old_150",
+      "n_tools": 150,
+      "desc_version": "old",
+      "hit@1": 0.64,
+      "hit@3": 0.64,
+      "mrr": 0.64,
+      "precision@3": 0.2133,
+      "recall@3": 0.64
+    },
+    {
+      "model": "opus",
+      "model_id": "claude-opus-4-6",
+      "condition": "new_41",
+      "n_tools": 41,
+      "desc_version": "new",
+      "hit@1": 0.82,
+      "hit@3": 0.88,
+      "mrr": 0.85,
+      "precision@3": 0.2933,
+      "recall@3": 0.88
+    },
+    {
+      "model": "opus",
+      "model_id": "claude-opus-4-6",
+      "condition": "new_150",
+      "n_tools": 150,
+      "desc_version": "new",
+      "hit@1": 0.74,
+      "hit@3": 0.8,
+      "mrr": 0.77,
+      "precision@3": 0.2666,
+      "recall@3": 0.8
+    }
+  ],
+  "governance_lift_at_150_tools": {
+    "haiku": {
+      "hit@1_lift": 0.14,
+      "hit@3_lift": 0.28,
+      "mrr_lift": 0.21,
+      "interpretation": "governance lift at 150 tools (NEW_150 - OLD_150)"
+    },
+    "sonnet": {
+      "hit@1_lift": 0.0,
+      "hit@3_lift": 0.14,
+      "mrr_lift": 0.0633,
+      "interpretation": "governance lift at 150 tools (NEW_150 - OLD_150)"
+    },
+    "opus": {
+      "hit@1_lift": 0.1,
+      "hit@3_lift": 0.16,
+      "mrr_lift": 0.13,
+      "interpretation": "governance lift at 150 tools (NEW_150 - OLD_150)"
+    }
+  },
+  "scale_degradation_with_governance": {
+    "haiku": {
+      "hit@1_delta": -0.14,
+      "mrr_delta": -0.08,
+      "interpretation": "accuracy change from 41\u2192150 tools with governance"
+    },
+    "sonnet": {
+      "hit@1_delta": -0.16,
+      "mrr_delta": -0.1334,
+      "interpretation": "accuracy change from 41\u2192150 tools with governance"
+    },
+    "opus": {
+      "hit@1_delta": -0.08,
+      "mrr_delta": -0.08,
+      "interpretation": "accuracy change from 41\u2192150 tools with governance"
+    }
+  },
+  "comparison_table": "Model    Condition      hit@1   hit@3     MRR\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nHaiku    old_41          0.74      0.74      0.74\nHaiku    old_150         0.52      0.54      0.53\nHaiku    new_41          0.80      0.84      0.82\nHaiku    new_150         0.66      0.82      0.74\nSonnet   old_41          0.76      0.76      0.76\nSonnet   old_150         0.50      0.50      0.50\nSonnet   new_41          0.66      0.74      0.70\nSonnet   new_150         0.50      0.64      0.56\nOpus     old_41          0.74      0.76      0.75\nOpus     old_150         0.64      0.64      0.64\nOpus     new_41          0.82      0.88      0.85\nOpus     new_150         0.74      0.80      0.77",
+  "findings": {
+    "haiku_lift": 0.14,
+    "sonnet_lift": 0.0,
+    "opus_lift": 0.1,
+    "hypothesis_result": "partially supported: Haiku (+0.14) and Opus (+0.10) benefit from governance at scale; Sonnet shows 0 hit@1 lift but +0.14 hit@3 lift"
+  }
+}

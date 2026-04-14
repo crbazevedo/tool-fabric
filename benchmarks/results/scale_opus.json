@@ -1,0 +1,3375 @@
+{
+  "model": "claude-opus-4-6",
+  "conditions": [
+    {
+      "id": "old_41",
+      "desc_version": "old",
+      "n_tools": 41,
+      "model": "claude-opus-4-6",
+      "use_guide": false,
+      "aggregate": {
+        "n_queries": 50,
+        "hit@1": 0.74,
+        "hit@3": 0.76,
+        "mrr": 0.7467,
+        "precision@3": 0.2533,
+        "recall@3": 0.76
+      },
+      "per_query": [
+        {
+          "id": "q01",
+          "query": "What do I know about the Korza investment thesis?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored domain-specific knowledge \u2192 search_facts not kb_hybrid_search.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q02",
+          "query": "Retrieve the fact I stored about the NDA signing date",
+          "ground_truth": [
+            "retrieve_fact"
+          ],
+          "notes": "Exact key lookup \u2192 retrieve_fact, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "retrieve_fact"
+          ]
+        },
+        {
+          "id": "q03",
+          "query": "Save the fact that my INSS filing deadline is June 30",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write intent \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q04",
+          "query": "List all facts I have stored about the Korza deal",
+          "ground_truth": [
+            "list_facts"
+          ],
+          "notes": "Enumerate rather than search \u2192 list_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q05",
+          "query": "What do I know about our runway and burn rate?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored financial knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q06",
+          "query": "What facts are stored about the regulatory approval process?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored process knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q07",
+          "query": "Store this new fact: Carlos closed the Korza series A on April 10",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write fact \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q08",
+          "query": "What information have I captured about the board members?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored captured knowledge; KB might also work but facts first.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q09",
+          "query": "Who have I been in touch with about Korza?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "THE failing query pre-governance. Entity discovery, not fact search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q10",
+          "query": "Find all contacts who are investors in the Brazil ecosystem",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Entity discovery by type \u2014 kb_hybrid_search over kb_search_entities.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q11",
+          "query": "Show me what I know about Felipe Oliveira and his role at Korza",
+          "ground_truth": [
+            "kb_get_entity"
+          ],
+          "notes": "Named entity detail \u2192 kb_get_entity.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q12",
+          "query": "What entities are connected to the Korza project in my knowledge graph?",
+          "ground_truth": [
+            "kb_get_entity_neighbors"
+          ],
+          "notes": "Graph traversal \u2192 kb_get_entity_neighbors.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q13",
+          "query": "Who are the key people I should talk to about the series B round?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Semantic entity discovery \u2192 kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q14",
+          "query": "Find all organizations I have tagged as potential Korza partners",
+          "ground_truth": [
+            "kb_search_entities"
+          ],
+          "notes": "Exact-name/substring entity search \u2192 kb_search_entities.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q15",
+          "query": "What is the relationship between Korza and the BNDES fund?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Relationship query \u2192 kb_hybrid_search for semantic match.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q16",
+          "query": "Show me all entities of type investor in my knowledge graph",
+          "ground_truth": [
+            "kb_list_entities_by_type"
+          ],
+          "notes": "Type-filtered enumeration \u2192 kb_list_entities_by_type.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_list_entities_by_type"
+          ]
+        },
+        {
+          "id": "q17",
+          "query": "What does my knowledge graph say about the top-ranked entities related to machine learning?",
+          "ground_truth": [
+            "kb_get_top_ranked"
+          ],
+          "notes": "Ranking query \u2192 kb_get_top_ranked.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_get_top_ranked"
+          ]
+        },
+        {
+          "id": "q18",
+          "query": "What is currently going on with the Korza onboarding?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Active monitoring query \u2192 list_situations, not list_actionables.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q19",
+          "query": "What open situations need my attention right now?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Awareness/monitoring \u2192 list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations"
+          ]
+        },
+        {
+          "id": "q20",
+          "query": "Walk me through the confidence trend of the compliance situation",
+          "ground_truth": [
+            "get_situation_trajectory"
+          ],
+          "notes": "Time-series trajectory \u2192 get_situation_trajectory.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_situations"
+          ]
+        },
+        {
+          "id": "q21",
+          "query": "Find situations related to the investor conversations",
+          "ground_truth": [
+            "search_situations"
+          ],
+          "notes": "Keyword-based situation search \u2192 search_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_situations"
+          ]
+        },
+        {
+          "id": "q22",
+          "query": "What is the current status of the Brazil hub setup?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Status/monitoring \u2192 list_situations.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_situations",
+            "kb_hybrid_search",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q23",
+          "query": "What do I need to do this week?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task/to-do query \u2192 list_actionables, not list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q24",
+          "query": "Show me all my pending tasks in the Korza domain",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task enumeration \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q25",
+          "query": "What actionable is currently assigned to the finance agent?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Filter by assignee \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q26",
+          "query": "I am taking ownership of the contract review task",
+          "ground_truth": [
+            "claim_actionable"
+          ],
+          "notes": "Ownership transfer \u2192 claim_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "claim_actionable"
+          ]
+        },
+        {
+          "id": "q27",
+          "query": "Mark the INSS filing task as complete",
+          "ground_truth": [
+            "update_actionable"
+          ],
+          "notes": "Status update \u2192 update_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "update_actionable"
+          ]
+        },
+        {
+          "id": "q28",
+          "query": "What actions are currently queued for human approval?",
+          "ground_truth": [
+            "get_action_queue"
+          ],
+          "notes": "HITL queue \u2192 get_action_queue, not list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_action_queue"
+          ]
+        },
+        {
+          "id": "q29",
+          "query": "What happened in the system over the last 24 hours?",
+          "ground_truth": [
+            "event_history"
+          ],
+          "notes": "Category + time filter \u2192 event_history, not query_events.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "event_history"
+          ]
+        },
+        {
+          "id": "q30",
+          "query": "Query all events in the Korza contract event stream",
+          "ground_truth": [
+            "query_events"
+          ],
+          "notes": "Named stream \u2192 query_events, not event_history.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "query_events"
+          ]
+        },
+        {
+          "id": "q31",
+          "query": "How many events have been processed per stream this week?",
+          "ground_truth": [
+            "get_event_metrics"
+          ],
+          "notes": "Metrics/counts \u2192 get_event_metrics.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "event_history"
+          ]
+        },
+        {
+          "id": "q32",
+          "query": "What was discussed in yesterday's Korza kickoff meeting?",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting content search \u2192 search_notes_tool, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q33",
+          "query": "Ingest the transcript from this morning's investor call",
+          "ground_truth": [
+            "ingest_meeting_transcript_tool"
+          ],
+          "notes": "Ingestion of meeting content \u2192 ingest_meeting_transcript_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "ingest_meeting_transcript_tool"
+          ]
+        },
+        {
+          "id": "q34",
+          "query": "Show me the notes from the Brazil hub planning session",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting note retrieval \u2192 search_notes_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q35",
+          "query": "Create a note summarizing the pricing decision we just made",
+          "ground_truth": [
+            "create_note"
+          ],
+          "notes": "Write new note \u2192 create_note.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "create_note"
+          ]
+        },
+        {
+          "id": "q36",
+          "query": "What decisions have I made about the Korza equity structure?",
+          "ground_truth": [
+            "search_decisions"
+          ],
+          "notes": "Decision history \u2192 search_decisions, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_decisions"
+          ]
+        },
+        {
+          "id": "q37",
+          "query": "What patterns have the agents identified in my finance domain?",
+          "ground_truth": [
+            "search_patterns"
+          ],
+          "notes": "Pattern store \u2192 search_patterns.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_patterns",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q38",
+          "query": "Look up recent error logs from the orchestrator agent",
+          "ground_truth": [
+            "search_error_logs"
+          ],
+          "notes": "Error log search \u2192 search_error_logs.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_error_logs"
+          ]
+        },
+        {
+          "id": "q39",
+          "query": "What work did I do last week on the IP strategy?",
+          "ground_truth": [
+            "search_episodes"
+          ],
+          "notes": "Session narrative \u2192 search_episodes, not search_facts or search_notes_tool.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.3333,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "search_notes_tool",
+            "search_episodes"
+          ]
+        },
+        {
+          "id": "q40",
+          "query": "What do the agents remember about my goals for Q2?",
+          "ground_truth": [
+            "get_agent_memories"
+          ],
+          "notes": "Agent memory retrieval \u2192 get_agent_memories.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_agent_memories"
+          ]
+        },
+        {
+          "id": "q41",
+          "query": "Set my goals for the Korza onboarding workstream",
+          "ground_truth": [
+            "set_agent_goals"
+          ],
+          "notes": "Write agent goals \u2192 set_agent_goals.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "set_agent_goals"
+          ]
+        },
+        {
+          "id": "q42",
+          "query": "Can I share the IP roadmap with the Korza team without restriction?",
+          "ground_truth": [
+            "governance_check"
+          ],
+          "notes": "Policy check on action \u2192 governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "classify_action"
+          ]
+        },
+        {
+          "id": "q43",
+          "query": "Does sending this contract to an external party require approval?",
+          "ground_truth": [
+            "compliance_check"
+          ],
+          "notes": "Compliance check \u2192 compliance_check vs governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "classify_action"
+          ]
+        },
+        {
+          "id": "q44",
+          "query": "Classify the risk level of moving IP materials to the Korza folder",
+          "ground_truth": [
+            "classify_action"
+          ],
+          "notes": "Risk classification \u2192 classify_action.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "classify_action"
+          ]
+        },
+        {
+          "id": "q45",
+          "query": "What is the overall health of the CARLOS-OS system right now?",
+          "ground_truth": [
+            "get_system_pulse"
+          ],
+          "notes": "System health \u2192 get_system_pulse.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_system_pulse"
+          ]
+        },
+        {
+          "id": "q46",
+          "query": "Post the sprint summary to the Slack operations channel",
+          "ground_truth": [
+            "post_to_slack"
+          ],
+          "notes": "Slack post \u2192 post_to_slack.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "post_to_slack"
+          ]
+        },
+        {
+          "id": "q47",
+          "query": "Find a free one-hour slot for a meeting this Thursday",
+          "ground_truth": [
+            "get_slot_availability"
+          ],
+          "notes": "Calendar availability \u2192 get_slot_availability.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_slot_availability"
+          ]
+        },
+        {
+          "id": "q48",
+          "query": "What domains are configured in my CARLOS-OS system?",
+          "ground_truth": [
+            "list_domains"
+          ],
+          "notes": "Domain listing \u2192 list_domains.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_domains"
+          ]
+        },
+        {
+          "id": "q49",
+          "query": "How many knowledge entities and facts are currently indexed?",
+          "ground_truth": [
+            "knowledge_stats"
+          ],
+          "notes": "Storage stats \u2192 knowledge_stats.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "knowledge_stats",
+            "memory_stats"
+          ]
+        },
+        {
+          "id": "q50",
+          "query": "Give me an analytics summary of my knowledge graph entity distribution",
+          "ground_truth": [
+            "kb_analytics_summary"
+          ],
+          "notes": "Graph analytics \u2192 kb_analytics_summary.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_analytics_summary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "old_150",
+      "desc_version": "old",
+      "n_tools": 150,
+      "model": "claude-opus-4-6",
+      "use_guide": false,
+      "aggregate": {
+        "n_queries": 50,
+        "hit@1": 0.64,
+        "hit@3": 0.64,
+        "mrr": 0.64,
+        "precision@3": 0.2133,
+        "recall@3": 0.64
+      },
+      "per_query": [
+        {
+          "id": "q01",
+          "query": "What do I know about the Korza investment thesis?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored domain-specific knowledge \u2192 search_facts not kb_hybrid_search.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "find_information"
+          ]
+        },
+        {
+          "id": "q02",
+          "query": "Retrieve the fact I stored about the NDA signing date",
+          "ground_truth": [
+            "retrieve_fact"
+          ],
+          "notes": "Exact key lookup \u2192 retrieve_fact, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "retrieve_fact"
+          ]
+        },
+        {
+          "id": "q03",
+          "query": "Save the fact that my INSS filing deadline is June 30",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write intent \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q04",
+          "query": "List all facts I have stored about the Korza deal",
+          "ground_truth": [
+            "list_facts"
+          ],
+          "notes": "Enumerate rather than search \u2192 list_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_facts"
+          ]
+        },
+        {
+          "id": "q05",
+          "query": "What do I know about our runway and burn rate?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored financial knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q06",
+          "query": "What facts are stored about the regulatory approval process?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored process knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q07",
+          "query": "Store this new fact: Carlos closed the Korza series A on April 10",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write fact \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q08",
+          "query": "What information have I captured about the board members?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored captured knowledge; KB might also work but facts first.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "find_information"
+          ]
+        },
+        {
+          "id": "q09",
+          "query": "Who have I been in touch with about Korza?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "THE failing query pre-governance. Entity discovery, not fact search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q10",
+          "query": "Find all contacts who are investors in the Brazil ecosystem",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Entity discovery by type \u2014 kb_hybrid_search over kb_search_entities.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q11",
+          "query": "Show me what I know about Felipe Oliveira and his role at Korza",
+          "ground_truth": [
+            "kb_get_entity"
+          ],
+          "notes": "Named entity detail \u2192 kb_get_entity.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q12",
+          "query": "What entities are connected to the Korza project in my knowledge graph?",
+          "ground_truth": [
+            "kb_get_entity_neighbors"
+          ],
+          "notes": "Graph traversal \u2192 kb_get_entity_neighbors.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_get_entity_neighbors"
+          ]
+        },
+        {
+          "id": "q13",
+          "query": "Who are the key people I should talk to about the series B round?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Semantic entity discovery \u2192 kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q14",
+          "query": "Find all organizations I have tagged as potential Korza partners",
+          "ground_truth": [
+            "kb_search_entities"
+          ],
+          "notes": "Exact-name/substring entity search \u2192 kb_search_entities.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "federation_list_org_registry"
+          ]
+        },
+        {
+          "id": "q15",
+          "query": "What is the relationship between Korza and the BNDES fund?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Relationship query \u2192 kb_hybrid_search for semantic match.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_get_entity_relations"
+          ]
+        },
+        {
+          "id": "q16",
+          "query": "Show me all entities of type investor in my knowledge graph",
+          "ground_truth": [
+            "kb_list_entities_by_type"
+          ],
+          "notes": "Type-filtered enumeration \u2192 kb_list_entities_by_type.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_list_entities_by_type"
+          ]
+        },
+        {
+          "id": "q17",
+          "query": "What does my knowledge graph say about the top-ranked entities related to machine learning?",
+          "ground_truth": [
+            "kb_get_top_ranked"
+          ],
+          "notes": "Ranking query \u2192 kb_get_top_ranked.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_get_top_ranked"
+          ]
+        },
+        {
+          "id": "q18",
+          "query": "What is currently going on with the Korza onboarding?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Active monitoring query \u2192 list_situations, not list_actionables.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "find_information"
+          ]
+        },
+        {
+          "id": "q19",
+          "query": "What open situations need my attention right now?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Awareness/monitoring \u2192 list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations"
+          ]
+        },
+        {
+          "id": "q20",
+          "query": "Walk me through the confidence trend of the compliance situation",
+          "ground_truth": [
+            "get_situation_trajectory"
+          ],
+          "notes": "Time-series trajectory \u2192 get_situation_trajectory.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_situation_trajectory"
+          ]
+        },
+        {
+          "id": "q21",
+          "query": "Find situations related to the investor conversations",
+          "ground_truth": [
+            "search_situations"
+          ],
+          "notes": "Keyword-based situation search \u2192 search_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_situations"
+          ]
+        },
+        {
+          "id": "q22",
+          "query": "What is the current status of the Brazil hub setup?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Status/monitoring \u2192 list_situations.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "check_status"
+          ]
+        },
+        {
+          "id": "q23",
+          "query": "What do I need to do this week?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task/to-do query \u2192 list_actionables, not list_situations.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "get_todos"
+          ]
+        },
+        {
+          "id": "q24",
+          "query": "Show me all my pending tasks in the Korza domain",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task enumeration \u2192 list_actionables.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "list_domain_items"
+          ]
+        },
+        {
+          "id": "q25",
+          "query": "What actionable is currently assigned to the finance agent?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Filter by assignee \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q26",
+          "query": "I am taking ownership of the contract review task",
+          "ground_truth": [
+            "claim_actionable"
+          ],
+          "notes": "Ownership transfer \u2192 claim_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "claim_actionable"
+          ]
+        },
+        {
+          "id": "q27",
+          "query": "Mark the INSS filing task as complete",
+          "ground_truth": [
+            "update_actionable"
+          ],
+          "notes": "Status update \u2192 update_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "update_actionable"
+          ]
+        },
+        {
+          "id": "q28",
+          "query": "What actions are currently queued for human approval?",
+          "ground_truth": [
+            "get_action_queue"
+          ],
+          "notes": "HITL queue \u2192 get_action_queue, not list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_action_queue"
+          ]
+        },
+        {
+          "id": "q29",
+          "query": "What happened in the system over the last 24 hours?",
+          "ground_truth": [
+            "event_history"
+          ],
+          "notes": "Category + time filter \u2192 event_history, not query_events.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "activity_log"
+          ]
+        },
+        {
+          "id": "q30",
+          "query": "Query all events in the Korza contract event stream",
+          "ground_truth": [
+            "query_events"
+          ],
+          "notes": "Named stream \u2192 query_events, not event_history.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "stream_events"
+          ]
+        },
+        {
+          "id": "q31",
+          "query": "How many events have been processed per stream this week?",
+          "ground_truth": [
+            "get_event_metrics"
+          ],
+          "notes": "Metrics/counts \u2192 get_event_metrics.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_event_metrics"
+          ]
+        },
+        {
+          "id": "q32",
+          "query": "What was discussed in yesterday's Korza kickoff meeting?",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting content search \u2192 search_notes_tool, not search_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_meeting_notes"
+          ]
+        },
+        {
+          "id": "q33",
+          "query": "Ingest the transcript from this morning's investor call",
+          "ground_truth": [
+            "ingest_meeting_transcript_tool"
+          ],
+          "notes": "Ingestion of meeting content \u2192 ingest_meeting_transcript_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "ingest_meeting_transcript_tool"
+          ]
+        },
+        {
+          "id": "q34",
+          "query": "Show me the notes from the Brazil hub planning session",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting note retrieval \u2192 search_notes_tool.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "get_meeting_notes"
+          ]
+        },
+        {
+          "id": "q35",
+          "query": "Create a note summarizing the pricing decision we just made",
+          "ground_truth": [
+            "create_note"
+          ],
+          "notes": "Write new note \u2192 create_note.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "create_note"
+          ]
+        },
+        {
+          "id": "q36",
+          "query": "What decisions have I made about the Korza equity structure?",
+          "ground_truth": [
+            "search_decisions"
+          ],
+          "notes": "Decision history \u2192 search_decisions, not search_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "query_decisions"
+          ]
+        },
+        {
+          "id": "q37",
+          "query": "What patterns have the agents identified in my finance domain?",
+          "ground_truth": [
+            "search_patterns"
+          ],
+          "notes": "Pattern store \u2192 search_patterns.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_patterns"
+          ]
+        },
+        {
+          "id": "q38",
+          "query": "Look up recent error logs from the orchestrator agent",
+          "ground_truth": [
+            "search_error_logs"
+          ],
+          "notes": "Error log search \u2192 search_error_logs.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_error_logs"
+          ]
+        },
+        {
+          "id": "q39",
+          "query": "What work did I do last week on the IP strategy?",
+          "ground_truth": [
+            "search_episodes"
+          ],
+          "notes": "Session narrative \u2192 search_episodes, not search_facts or search_notes_tool.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "find_past_work"
+          ]
+        },
+        {
+          "id": "q40",
+          "query": "What do the agents remember about my goals for Q2?",
+          "ground_truth": [
+            "get_agent_memories"
+          ],
+          "notes": "Agent memory retrieval \u2192 get_agent_memories.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_agent_memories"
+          ]
+        },
+        {
+          "id": "q41",
+          "query": "Set my goals for the Korza onboarding workstream",
+          "ground_truth": [
+            "set_agent_goals"
+          ],
+          "notes": "Write agent goals \u2192 set_agent_goals.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "set_agent_goals"
+          ]
+        },
+        {
+          "id": "q42",
+          "query": "Can I share the IP roadmap with the Korza team without restriction?",
+          "ground_truth": [
+            "governance_check"
+          ],
+          "notes": "Policy check on action \u2192 governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "check_policy"
+          ]
+        },
+        {
+          "id": "q43",
+          "query": "Does sending this contract to an external party require approval?",
+          "ground_truth": [
+            "compliance_check"
+          ],
+          "notes": "Compliance check \u2192 compliance_check vs governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "governance_check"
+          ]
+        },
+        {
+          "id": "q44",
+          "query": "Classify the risk level of moving IP materials to the Korza folder",
+          "ground_truth": [
+            "classify_action"
+          ],
+          "notes": "Risk classification \u2192 classify_action.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "classify_action"
+          ]
+        },
+        {
+          "id": "q45",
+          "query": "What is the overall health of the CARLOS-OS system right now?",
+          "ground_truth": [
+            "get_system_pulse"
+          ],
+          "notes": "System health \u2192 get_system_pulse.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "check_health"
+          ]
+        },
+        {
+          "id": "q46",
+          "query": "Post the sprint summary to the Slack operations channel",
+          "ground_truth": [
+            "post_to_slack"
+          ],
+          "notes": "Slack post \u2192 post_to_slack.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "post_to_slack"
+          ]
+        },
+        {
+          "id": "q47",
+          "query": "Find a free one-hour slot for a meeting this Thursday",
+          "ground_truth": [
+            "get_slot_availability"
+          ],
+          "notes": "Calendar availability \u2192 get_slot_availability.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_slot_availability"
+          ]
+        },
+        {
+          "id": "q48",
+          "query": "What domains are configured in my CARLOS-OS system?",
+          "ground_truth": [
+            "list_domains"
+          ],
+          "notes": "Domain listing \u2192 list_domains.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_domains"
+          ]
+        },
+        {
+          "id": "q49",
+          "query": "How many knowledge entities and facts are currently indexed?",
+          "ground_truth": [
+            "knowledge_stats"
+          ],
+          "notes": "Storage stats \u2192 knowledge_stats.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "knowledge_stats"
+          ]
+        },
+        {
+          "id": "q50",
+          "query": "Give me an analytics summary of my knowledge graph entity distribution",
+          "ground_truth": [
+            "kb_analytics_summary"
+          ],
+          "notes": "Graph analytics \u2192 kb_analytics_summary.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_analytics_summary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new_41",
+      "desc_version": "new",
+      "n_tools": 41,
+      "model": "claude-opus-4-6",
+      "use_guide": true,
+      "aggregate": {
+        "n_queries": 50,
+        "hit@1": 0.82,
+        "hit@3": 0.88,
+        "mrr": 0.85,
+        "precision@3": 0.2933,
+        "recall@3": 0.88
+      },
+      "per_query": [
+        {
+          "id": "q01",
+          "query": "What do I know about the Korza investment thesis?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored domain-specific knowledge \u2192 search_facts not kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "kb_hybrid_search",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q02",
+          "query": "Retrieve the fact I stored about the NDA signing date",
+          "ground_truth": [
+            "retrieve_fact"
+          ],
+          "notes": "Exact key lookup \u2192 retrieve_fact, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "retrieve_fact"
+          ]
+        },
+        {
+          "id": "q03",
+          "query": "Save the fact that my INSS filing deadline is June 30",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write intent \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q04",
+          "query": "List all facts I have stored about the Korza deal",
+          "ground_truth": [
+            "list_facts"
+          ],
+          "notes": "Enumerate rather than search \u2192 list_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q05",
+          "query": "What do I know about our runway and burn rate?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored financial knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q06",
+          "query": "What facts are stored about the regulatory approval process?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored process knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q07",
+          "query": "Store this new fact: Carlos closed the Korza series A on April 10",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write fact \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q08",
+          "query": "What information have I captured about the board members?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored captured knowledge; KB might also work but facts first.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q09",
+          "query": "Who have I been in touch with about Korza?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "THE failing query pre-governance. Entity discovery, not fact search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q10",
+          "query": "Find all contacts who are investors in the Brazil ecosystem",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Entity discovery by type \u2014 kb_hybrid_search over kb_search_entities.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_list_entities_by_type",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q11",
+          "query": "Show me what I know about Felipe Oliveira and his role at Korza",
+          "ground_truth": [
+            "kb_get_entity"
+          ],
+          "notes": "Named entity detail \u2192 kb_get_entity.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q12",
+          "query": "What entities are connected to the Korza project in my knowledge graph?",
+          "ground_truth": [
+            "kb_get_entity_neighbors"
+          ],
+          "notes": "Graph traversal \u2192 kb_get_entity_neighbors.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q13",
+          "query": "Who are the key people I should talk to about the series B round?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Semantic entity discovery \u2192 kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q14",
+          "query": "Find all organizations I have tagged as potential Korza partners",
+          "ground_truth": [
+            "kb_search_entities"
+          ],
+          "notes": "Exact-name/substring entity search \u2192 kb_search_entities.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_list_entities_by_type",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q15",
+          "query": "What is the relationship between Korza and the BNDES fund?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Relationship query \u2192 kb_hybrid_search for semantic match.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q16",
+          "query": "Show me all entities of type investor in my knowledge graph",
+          "ground_truth": [
+            "kb_list_entities_by_type"
+          ],
+          "notes": "Type-filtered enumeration \u2192 kb_list_entities_by_type.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_list_entities_by_type"
+          ]
+        },
+        {
+          "id": "q17",
+          "query": "What does my knowledge graph say about the top-ranked entities related to machine learning?",
+          "ground_truth": [
+            "kb_get_top_ranked"
+          ],
+          "notes": "Ranking query \u2192 kb_get_top_ranked.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_get_top_ranked"
+          ]
+        },
+        {
+          "id": "q18",
+          "query": "What is currently going on with the Korza onboarding?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Active monitoring query \u2192 list_situations, not list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations",
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q19",
+          "query": "What open situations need my attention right now?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Awareness/monitoring \u2192 list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations"
+          ]
+        },
+        {
+          "id": "q20",
+          "query": "Walk me through the confidence trend of the compliance situation",
+          "ground_truth": [
+            "get_situation_trajectory"
+          ],
+          "notes": "Time-series trajectory \u2192 get_situation_trajectory.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_situation_trajectory"
+          ]
+        },
+        {
+          "id": "q21",
+          "query": "Find situations related to the investor conversations",
+          "ground_truth": [
+            "search_situations"
+          ],
+          "notes": "Keyword-based situation search \u2192 search_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_situations"
+          ]
+        },
+        {
+          "id": "q22",
+          "query": "What is the current status of the Brazil hub setup?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Status/monitoring \u2192 list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations",
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q23",
+          "query": "What do I need to do this week?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task/to-do query \u2192 list_actionables, not list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q24",
+          "query": "Show me all my pending tasks in the Korza domain",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task enumeration \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q25",
+          "query": "What actionable is currently assigned to the finance agent?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Filter by assignee \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q26",
+          "query": "I am taking ownership of the contract review task",
+          "ground_truth": [
+            "claim_actionable"
+          ],
+          "notes": "Ownership transfer \u2192 claim_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "claim_actionable"
+          ]
+        },
+        {
+          "id": "q27",
+          "query": "Mark the INSS filing task as complete",
+          "ground_truth": [
+            "update_actionable"
+          ],
+          "notes": "Status update \u2192 update_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "update_actionable"
+          ]
+        },
+        {
+          "id": "q28",
+          "query": "What actions are currently queued for human approval?",
+          "ground_truth": [
+            "get_action_queue"
+          ],
+          "notes": "HITL queue \u2192 get_action_queue, not list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_action_queue"
+          ]
+        },
+        {
+          "id": "q29",
+          "query": "What happened in the system over the last 24 hours?",
+          "ground_truth": [
+            "event_history"
+          ],
+          "notes": "Category + time filter \u2192 event_history, not query_events.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "event_history"
+          ]
+        },
+        {
+          "id": "q30",
+          "query": "Query all events in the Korza contract event stream",
+          "ground_truth": [
+            "query_events"
+          ],
+          "notes": "Named stream \u2192 query_events, not event_history.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "query_events"
+          ]
+        },
+        {
+          "id": "q31",
+          "query": "How many events have been processed per stream this week?",
+          "ground_truth": [
+            "get_event_metrics"
+          ],
+          "notes": "Metrics/counts \u2192 get_event_metrics.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "event_history"
+          ]
+        },
+        {
+          "id": "q32",
+          "query": "What was discussed in yesterday's Korza kickoff meeting?",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting content search \u2192 search_notes_tool, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q33",
+          "query": "Ingest the transcript from this morning's investor call",
+          "ground_truth": [
+            "ingest_meeting_transcript_tool"
+          ],
+          "notes": "Ingestion of meeting content \u2192 ingest_meeting_transcript_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "ingest_meeting_transcript_tool"
+          ]
+        },
+        {
+          "id": "q34",
+          "query": "Show me the notes from the Brazil hub planning session",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting note retrieval \u2192 search_notes_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q35",
+          "query": "Create a note summarizing the pricing decision we just made",
+          "ground_truth": [
+            "create_note"
+          ],
+          "notes": "Write new note \u2192 create_note.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "create_note"
+          ]
+        },
+        {
+          "id": "q36",
+          "query": "What decisions have I made about the Korza equity structure?",
+          "ground_truth": [
+            "search_decisions"
+          ],
+          "notes": "Decision history \u2192 search_decisions, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_decisions",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q37",
+          "query": "What patterns have the agents identified in my finance domain?",
+          "ground_truth": [
+            "search_patterns"
+          ],
+          "notes": "Pattern store \u2192 search_patterns.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_patterns",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q38",
+          "query": "Look up recent error logs from the orchestrator agent",
+          "ground_truth": [
+            "search_error_logs"
+          ],
+          "notes": "Error log search \u2192 search_error_logs.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_error_logs"
+          ]
+        },
+        {
+          "id": "q39",
+          "query": "What work did I do last week on the IP strategy?",
+          "ground_truth": [
+            "search_episodes"
+          ],
+          "notes": "Session narrative \u2192 search_episodes, not search_facts or search_notes_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_episodes",
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q40",
+          "query": "What do the agents remember about my goals for Q2?",
+          "ground_truth": [
+            "get_agent_memories"
+          ],
+          "notes": "Agent memory retrieval \u2192 get_agent_memories.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "get_agent_memories"
+          ]
+        },
+        {
+          "id": "q41",
+          "query": "Set my goals for the Korza onboarding workstream",
+          "ground_truth": [
+            "set_agent_goals"
+          ],
+          "notes": "Write agent goals \u2192 set_agent_goals.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "set_agent_goals"
+          ]
+        },
+        {
+          "id": "q42",
+          "query": "Can I share the IP roadmap with the Korza team without restriction?",
+          "ground_truth": [
+            "governance_check"
+          ],
+          "notes": "Policy check on action \u2192 governance_check.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "governance_check"
+          ]
+        },
+        {
+          "id": "q43",
+          "query": "Does sending this contract to an external party require approval?",
+          "ground_truth": [
+            "compliance_check"
+          ],
+          "notes": "Compliance check \u2192 compliance_check vs governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "governance_check"
+          ]
+        },
+        {
+          "id": "q44",
+          "query": "Classify the risk level of moving IP materials to the Korza folder",
+          "ground_truth": [
+            "classify_action"
+          ],
+          "notes": "Risk classification \u2192 classify_action.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "classify_action"
+          ]
+        },
+        {
+          "id": "q45",
+          "query": "What is the overall health of the CARLOS-OS system right now?",
+          "ground_truth": [
+            "get_system_pulse"
+          ],
+          "notes": "System health \u2192 get_system_pulse.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_system_pulse"
+          ]
+        },
+        {
+          "id": "q46",
+          "query": "Post the sprint summary to the Slack operations channel",
+          "ground_truth": [
+            "post_to_slack"
+          ],
+          "notes": "Slack post \u2192 post_to_slack.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "post_to_slack"
+          ]
+        },
+        {
+          "id": "q47",
+          "query": "Find a free one-hour slot for a meeting this Thursday",
+          "ground_truth": [
+            "get_slot_availability"
+          ],
+          "notes": "Calendar availability \u2192 get_slot_availability.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_slot_availability"
+          ]
+        },
+        {
+          "id": "q48",
+          "query": "What domains are configured in my CARLOS-OS system?",
+          "ground_truth": [
+            "list_domains"
+          ],
+          "notes": "Domain listing \u2192 list_domains.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_domains"
+          ]
+        },
+        {
+          "id": "q49",
+          "query": "How many knowledge entities and facts are currently indexed?",
+          "ground_truth": [
+            "knowledge_stats"
+          ],
+          "notes": "Storage stats \u2192 knowledge_stats.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "knowledge_stats"
+          ]
+        },
+        {
+          "id": "q50",
+          "query": "Give me an analytics summary of my knowledge graph entity distribution",
+          "ground_truth": [
+            "kb_analytics_summary"
+          ],
+          "notes": "Graph analytics \u2192 kb_analytics_summary.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_analytics_summary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new_150",
+      "desc_version": "new",
+      "n_tools": 150,
+      "model": "claude-opus-4-6",
+      "use_guide": true,
+      "aggregate": {
+        "n_queries": 50,
+        "hit@1": 0.74,
+        "hit@3": 0.8,
+        "mrr": 0.77,
+        "precision@3": 0.2666,
+        "recall@3": 0.8
+      },
+      "per_query": [
+        {
+          "id": "q01",
+          "query": "What do I know about the Korza investment thesis?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored domain-specific knowledge \u2192 search_facts not kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "kb_hybrid_search",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q02",
+          "query": "Retrieve the fact I stored about the NDA signing date",
+          "ground_truth": [
+            "retrieve_fact"
+          ],
+          "notes": "Exact key lookup \u2192 retrieve_fact, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "retrieve_fact"
+          ]
+        },
+        {
+          "id": "q03",
+          "query": "Save the fact that my INSS filing deadline is June 30",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write intent \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q04",
+          "query": "List all facts I have stored about the Korza deal",
+          "ground_truth": [
+            "list_facts"
+          ],
+          "notes": "Enumerate rather than search \u2192 list_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q05",
+          "query": "What do I know about our runway and burn rate?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored financial knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q06",
+          "query": "What facts are stored about the regulatory approval process?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored process knowledge \u2192 search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q07",
+          "query": "Store this new fact: Carlos closed the Korza series A on April 10",
+          "ground_truth": [
+            "store_fact"
+          ],
+          "notes": "Write fact \u2192 store_fact.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "store_fact"
+          ]
+        },
+        {
+          "id": "q08",
+          "query": "What information have I captured about the board members?",
+          "ground_truth": [
+            "search_facts"
+          ],
+          "notes": "Stored captured knowledge; KB might also work but facts first.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q09",
+          "query": "Who have I been in touch with about Korza?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "THE failing query pre-governance. Entity discovery, not fact search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q10",
+          "query": "Find all contacts who are investors in the Brazil ecosystem",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Entity discovery by type \u2014 kb_hybrid_search over kb_search_entities.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q11",
+          "query": "Show me what I know about Felipe Oliveira and his role at Korza",
+          "ground_truth": [
+            "kb_get_entity"
+          ],
+          "notes": "Named entity detail \u2192 kb_get_entity.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q12",
+          "query": "What entities are connected to the Korza project in my knowledge graph?",
+          "ground_truth": [
+            "kb_get_entity_neighbors"
+          ],
+          "notes": "Graph traversal \u2192 kb_get_entity_neighbors.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q13",
+          "query": "Who are the key people I should talk to about the series B round?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Semantic entity discovery \u2192 kb_hybrid_search.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q14",
+          "query": "Find all organizations I have tagged as potential Korza partners",
+          "ground_truth": [
+            "kb_search_entities"
+          ],
+          "notes": "Exact-name/substring entity search \u2192 kb_search_entities.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_facts",
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q15",
+          "query": "What is the relationship between Korza and the BNDES fund?",
+          "ground_truth": [
+            "kb_hybrid_search"
+          ],
+          "notes": "Relationship query \u2192 kb_hybrid_search for semantic match.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "kb_search_entities"
+          ]
+        },
+        {
+          "id": "q16",
+          "query": "Show me all entities of type investor in my knowledge graph",
+          "ground_truth": [
+            "kb_list_entities_by_type"
+          ],
+          "notes": "Type-filtered enumeration \u2192 kb_list_entities_by_type.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_list_entities_by_type"
+          ]
+        },
+        {
+          "id": "q17",
+          "query": "What does my knowledge graph say about the top-ranked entities related to machine learning?",
+          "ground_truth": [
+            "kb_get_top_ranked"
+          ],
+          "notes": "Ranking query \u2192 kb_get_top_ranked.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_get_top_ranked",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q18",
+          "query": "What is currently going on with the Korza onboarding?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Active monitoring query \u2192 list_situations, not list_actionables.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "kb_hybrid_search",
+            "search_situations",
+            "search_facts"
+          ]
+        },
+        {
+          "id": "q19",
+          "query": "What open situations need my attention right now?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Awareness/monitoring \u2192 list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_situations"
+          ]
+        },
+        {
+          "id": "q20",
+          "query": "Walk me through the confidence trend of the compliance situation",
+          "ground_truth": [
+            "get_situation_trajectory"
+          ],
+          "notes": "Time-series trajectory \u2192 get_situation_trajectory.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_situation_trajectory"
+          ]
+        },
+        {
+          "id": "q21",
+          "query": "Find situations related to the investor conversations",
+          "ground_truth": [
+            "search_situations"
+          ],
+          "notes": "Keyword-based situation search \u2192 search_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_situations"
+          ]
+        },
+        {
+          "id": "q22",
+          "query": "What is the current status of the Brazil hub setup?",
+          "ground_truth": [
+            "list_situations"
+          ],
+          "notes": "Status/monitoring \u2192 list_situations.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "list_situations",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q23",
+          "query": "What do I need to do this week?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task/to-do query \u2192 list_actionables, not list_situations.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q24",
+          "query": "Show me all my pending tasks in the Korza domain",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Task enumeration \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q25",
+          "query": "What actionable is currently assigned to the finance agent?",
+          "ground_truth": [
+            "list_actionables"
+          ],
+          "notes": "Filter by assignee \u2192 list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_actionables"
+          ]
+        },
+        {
+          "id": "q26",
+          "query": "I am taking ownership of the contract review task",
+          "ground_truth": [
+            "claim_actionable"
+          ],
+          "notes": "Ownership transfer \u2192 claim_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "claim_actionable"
+          ]
+        },
+        {
+          "id": "q27",
+          "query": "Mark the INSS filing task as complete",
+          "ground_truth": [
+            "update_actionable"
+          ],
+          "notes": "Status update \u2192 update_actionable.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "update_actionable"
+          ]
+        },
+        {
+          "id": "q28",
+          "query": "What actions are currently queued for human approval?",
+          "ground_truth": [
+            "get_action_queue"
+          ],
+          "notes": "HITL queue \u2192 get_action_queue, not list_actionables.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_action_queue"
+          ]
+        },
+        {
+          "id": "q29",
+          "query": "What happened in the system over the last 24 hours?",
+          "ground_truth": [
+            "event_history"
+          ],
+          "notes": "Category + time filter \u2192 event_history, not query_events.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "get_recent_events",
+            "activity_log",
+            "search_episodes"
+          ]
+        },
+        {
+          "id": "q30",
+          "query": "Query all events in the Korza contract event stream",
+          "ground_truth": [
+            "query_events"
+          ],
+          "notes": "Named stream \u2192 query_events, not event_history.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "query_events"
+          ]
+        },
+        {
+          "id": "q31",
+          "query": "How many events have been processed per stream this week?",
+          "ground_truth": [
+            "get_event_metrics"
+          ],
+          "notes": "Metrics/counts \u2192 get_event_metrics.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_event_metrics"
+          ]
+        },
+        {
+          "id": "q32",
+          "query": "What was discussed in yesterday's Korza kickoff meeting?",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting content search \u2192 search_notes_tool, not search_facts.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool",
+            "search_meeting_notes"
+          ]
+        },
+        {
+          "id": "q33",
+          "query": "Ingest the transcript from this morning's investor call",
+          "ground_truth": [
+            "ingest_meeting_transcript_tool"
+          ],
+          "notes": "Ingestion of meeting content \u2192 ingest_meeting_transcript_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "ingest_meeting_transcript_tool"
+          ]
+        },
+        {
+          "id": "q34",
+          "query": "Show me the notes from the Brazil hub planning session",
+          "ground_truth": [
+            "search_notes_tool"
+          ],
+          "notes": "Meeting note retrieval \u2192 search_notes_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_notes_tool"
+          ]
+        },
+        {
+          "id": "q35",
+          "query": "Create a note summarizing the pricing decision we just made",
+          "ground_truth": [
+            "create_note"
+          ],
+          "notes": "Write new note \u2192 create_note.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "create_note"
+          ]
+        },
+        {
+          "id": "q36",
+          "query": "What decisions have I made about the Korza equity structure?",
+          "ground_truth": [
+            "search_decisions"
+          ],
+          "notes": "Decision history \u2192 search_decisions, not search_facts.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "search_facts",
+            "kb_hybrid_search",
+            "query_decisions"
+          ]
+        },
+        {
+          "id": "q37",
+          "query": "What patterns have the agents identified in my finance domain?",
+          "ground_truth": [
+            "search_patterns"
+          ],
+          "notes": "Pattern store \u2192 search_patterns.",
+          "hit@1": 0,
+          "hit@3": 1,
+          "mrr": 0.5,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_facts",
+            "search_patterns",
+            "list_situations"
+          ]
+        },
+        {
+          "id": "q38",
+          "query": "Look up recent error logs from the orchestrator agent",
+          "ground_truth": [
+            "search_error_logs"
+          ],
+          "notes": "Error log search \u2192 search_error_logs.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_error_logs"
+          ]
+        },
+        {
+          "id": "q39",
+          "query": "What work did I do last week on the IP strategy?",
+          "ground_truth": [
+            "search_episodes"
+          ],
+          "notes": "Session narrative \u2192 search_episodes, not search_facts or search_notes_tool.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "search_episodes",
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q40",
+          "query": "What do the agents remember about my goals for Q2?",
+          "ground_truth": [
+            "get_agent_memories"
+          ],
+          "notes": "Agent memory retrieval \u2192 get_agent_memories.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_agent_memories",
+            "search_facts",
+            "kb_hybrid_search"
+          ]
+        },
+        {
+          "id": "q41",
+          "query": "Set my goals for the Korza onboarding workstream",
+          "ground_truth": [
+            "set_agent_goals"
+          ],
+          "notes": "Write agent goals \u2192 set_agent_goals.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "set_agent_goals"
+          ]
+        },
+        {
+          "id": "q42",
+          "query": "Can I share the IP roadmap with the Korza team without restriction?",
+          "ground_truth": [
+            "governance_check"
+          ],
+          "notes": "Policy check on action \u2192 governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "check_policy",
+            "risk_assessment"
+          ]
+        },
+        {
+          "id": "q43",
+          "query": "Does sending this contract to an external party require approval?",
+          "ground_truth": [
+            "compliance_check"
+          ],
+          "notes": "Compliance check \u2192 compliance_check vs governance_check.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "action_check",
+            "governance_check"
+          ]
+        },
+        {
+          "id": "q44",
+          "query": "Classify the risk level of moving IP materials to the Korza folder",
+          "ground_truth": [
+            "classify_action"
+          ],
+          "notes": "Risk classification \u2192 classify_action.",
+          "hit@1": 0,
+          "hit@3": 0,
+          "mrr": 0.0,
+          "precision@3": 0.0,
+          "recall@3": 0.0,
+          "predicted": [
+            "risk_assessment"
+          ]
+        },
+        {
+          "id": "q45",
+          "query": "What is the overall health of the CARLOS-OS system right now?",
+          "ground_truth": [
+            "get_system_pulse"
+          ],
+          "notes": "System health \u2192 get_system_pulse.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_system_pulse"
+          ]
+        },
+        {
+          "id": "q46",
+          "query": "Post the sprint summary to the Slack operations channel",
+          "ground_truth": [
+            "post_to_slack"
+          ],
+          "notes": "Slack post \u2192 post_to_slack.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "post_to_slack"
+          ]
+        },
+        {
+          "id": "q47",
+          "query": "Find a free one-hour slot for a meeting this Thursday",
+          "ground_truth": [
+            "get_slot_availability"
+          ],
+          "notes": "Calendar availability \u2192 get_slot_availability.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "get_slot_availability"
+          ]
+        },
+        {
+          "id": "q48",
+          "query": "What domains are configured in my CARLOS-OS system?",
+          "ground_truth": [
+            "list_domains"
+          ],
+          "notes": "Domain listing \u2192 list_domains.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "list_domains"
+          ]
+        },
+        {
+          "id": "q49",
+          "query": "How many knowledge entities and facts are currently indexed?",
+          "ground_truth": [
+            "knowledge_stats"
+          ],
+          "notes": "Storage stats \u2192 knowledge_stats.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "knowledge_stats"
+          ]
+        },
+        {
+          "id": "q50",
+          "query": "Give me an analytics summary of my knowledge graph entity distribution",
+          "ground_truth": [
+            "kb_analytics_summary"
+          ],
+          "notes": "Graph analytics \u2192 kb_analytics_summary.",
+          "hit@1": 1,
+          "hit@3": 1,
+          "mrr": 1.0,
+          "precision@3": 0.3333,
+          "recall@3": 1.0,
+          "predicted": [
+            "kb_analytics_summary"
+          ]
+        }
+      ]
+    }
+  ],
+  "deltas": {
+    "scale_effect_old": {
+      "label": "OLD descriptions: accuracy drop at scale",
+      "from": "old_41",
+      "to": "old_150",
+      "hit@1_delta": -0.1,
+      "mrr_delta": -0.1067,
+      "hit@3_delta": -0.12
+    },
+    "scale_effect_new": {
+      "label": "NEW descriptions: accuracy drop at scale",
+      "from": "new_41",
+      "to": "new_150",
+      "hit@1_delta": -0.08,
+      "mrr_delta": -0.08,
+      "hit@3_delta": -0.08
+    },
+    "govern_effect_41": {
+      "label": "Governance lift at 41 tools",
+      "from": "old_41",
+      "to": "new_41",
+      "hit@1_delta": 0.08,
+      "mrr_delta": 0.1033,
+      "hit@3_delta": 0.12
+    },
+    "govern_effect_150": {
+      "label": "Governance lift at 150 tools",
+      "from": "old_150",
+      "to": "new_150",
+      "hit@1_delta": 0.1,
+      "mrr_delta": 0.13,
+      "hit@3_delta": 0.16
+    }
+  },
+  "summary_table": "Condition     n_tools    hit@1    hit@3      mrr      p@3      r@3\n------------------------------------------------------------------\nold_41             41   0.7400   0.7600   0.7467   0.2533   0.7600\nold_150           150   0.6400   0.6400   0.6400   0.2133   0.6400\nnew_41             41   0.8200   0.8800   0.8500   0.2933   0.8800\nnew_150           150   0.7400   0.8000   0.7700   0.2666   0.8000",
+  "n_queries": 50,
+  "small_tool_count": 41
+}
