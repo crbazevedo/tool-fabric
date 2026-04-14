@@ -1,0 +1,728 @@
+{
+  "registry": "examples/carlos-os/.tool-fabric.yaml",
+  "n_tools": 34,
+  "n_queries": 20,
+  "baseline": {
+    "aggregate": {
+      "n_queries": 20,
+      "hit@1": 0.6,
+      "hit@k": 0.6,
+      "mrr": 0.7356,
+      "avg_precision@k": 0.6,
+      "avg_recall@k": 0.6
+    },
+    "per_query": [
+      {
+        "id": "q01",
+        "query": "Create a bug report in GitHub for the authentication issue",
+        "ground_truth": [
+          "github_create_issue"
+        ],
+        "mode": "baseline",
+        "notes": "Simple single-tool; baseline should get this right.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "github_create_issue",
+        "top_score": 0.2892
+      },
+      {
+        "id": "q02",
+        "query": "Track this feature request in our Linear sprint backlog",
+        "ground_truth": [
+          "linear_create_issue"
+        ],
+        "mode": "baseline",
+        "notes": "GitHub vs Linear disambiguation \u2014 tests query_tips.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1,
+        "k": 1,
+        "top_prediction": "linear_add_to_cycle",
+        "top_score": 0.2521
+      },
+      {
+        "id": "q03",
+        "query": "Send a notification to the engineering Slack channel about the deployment",
+        "ground_truth": [
+          "slack_send_message"
+        ],
+        "mode": "baseline",
+        "notes": "Slack vs Gmail \u2014 'Slack channel' is the key signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "slack_send_message",
+        "top_score": 0.2813
+      },
+      {
+        "id": "q04",
+        "query": "Send a formal email to the client about the project status update",
+        "ground_truth": [
+          "gmail_send"
+        ],
+        "mode": "baseline",
+        "notes": "Gmail vs Slack \u2014 'formal email' + 'client' tips it.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "slack_send_message",
+        "top_score": 0.1444
+      },
+      {
+        "id": "q05",
+        "query": "Run a shell command to check the disk space on the server",
+        "ground_truth": [
+          "bash_execute"
+        ],
+        "mode": "baseline",
+        "notes": "bash vs python \u2014 'shell command' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "bash_execute",
+        "top_score": 0.3474
+      },
+      {
+        "id": "q06",
+        "query": "Open a pull request for the feature branch I just pushed to GitHub",
+        "ground_truth": [
+          "github_create_pr"
+        ],
+        "mode": "baseline",
+        "notes": "Distinct intent \u2014 no close alternative in the registry.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "github_create_pr",
+        "top_score": 0.3555
+      },
+      {
+        "id": "q07",
+        "query": "Search online to find the latest release notes for scikit-learn",
+        "ground_truth": [
+          "web_search"
+        ],
+        "mode": "baseline",
+        "notes": "web_search vs web_fetch \u2014 'search online' tips it; URL not known.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1111,
+        "k": 1,
+        "top_prediction": "web_fetch",
+        "top_score": 0.1806
+      },
+      {
+        "id": "q08",
+        "query": "Read the contents of the pyproject.toml configuration file",
+        "ground_truth": [
+          "file_read"
+        ],
+        "mode": "baseline",
+        "notes": "Distinct file-system read intent.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "file_write",
+        "top_score": 0.2288
+      },
+      {
+        "id": "q09",
+        "query": "Execute a Python script to aggregate and transform the CSV data",
+        "ground_truth": [
+          "python_execute"
+        ],
+        "mode": "baseline",
+        "notes": "bash vs python \u2014 'Python script' is the disambiguating signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "python_execute",
+        "top_score": 0.319
+      },
+      {
+        "id": "q10",
+        "query": "Ask Claude to summarize these meeting notes into a list of action items",
+        "ground_truth": [
+          "claude_invoke"
+        ],
+        "mode": "baseline",
+        "notes": "LLM selection \u2014 claude vs gemini vs gpt.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "github_search_issues",
+        "top_score": 0.1868
+      },
+      {
+        "id": "q11",
+        "query": "Find a free time slot for a one-hour meeting next Tuesday",
+        "ground_truth": [
+          "calendar_find_slot"
+        ],
+        "mode": "baseline",
+        "notes": "find_slot vs create_event \u2014 'find a slot' signals search.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "calendar_find_slot",
+        "top_score": 0.2706
+      },
+      {
+        "id": "q12",
+        "query": "Create a new Google Calendar event for the team standup at 9am tomorrow",
+        "ground_truth": [
+          "calendar_create_event"
+        ],
+        "mode": "baseline",
+        "notes": "create_event vs find_slot \u2014 'create an event' signals write.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "calendar_invite_attendees",
+        "top_score": 0.5625
+      },
+      {
+        "id": "q13",
+        "query": "Log this month's API cost as a transaction in the Notion budget tracker",
+        "ground_truth": [
+          "notion_update_budget"
+        ],
+        "mode": "baseline",
+        "notes": "Finance domain \u2014 Notion budget update.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "notion_update_budget",
+        "top_score": 0.3212
+      },
+      {
+        "id": "q14",
+        "query": "Check whether there is already a Linear issue tracking this bug",
+        "ground_truth": [
+          "linear_search_issues"
+        ],
+        "mode": "baseline",
+        "notes": "Search-before-create \u2014 'check' and 'already' signal search intent.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1667,
+        "k": 1,
+        "top_prediction": "github_create_issue",
+        "top_score": 0.3271
+      },
+      {
+        "id": "q15",
+        "query": "Add the tech-debt label to GitHub issue number 42",
+        "ground_truth": [
+          "github_add_label"
+        ],
+        "mode": "baseline",
+        "notes": "Narrow GitHub sub-operation \u2014 labels.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.3333,
+        "k": 1,
+        "top_prediction": "github_assign_issue",
+        "top_score": 0.3409
+      },
+      {
+        "id": "q16",
+        "query": "Fetch the full page content of this documentation URL I already have",
+        "ground_truth": [
+          "web_fetch"
+        ],
+        "mode": "baseline",
+        "notes": "web_fetch vs web_search \u2014 'URL I already have' + 'full content'.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "web_fetch",
+        "top_score": 0.3219
+      },
+      {
+        "id": "q17",
+        "query": "Draft an email to the investor but do not send it yet \u2014 save as draft",
+        "ground_truth": [
+          "gmail_create_draft"
+        ],
+        "mode": "baseline",
+        "notes": "gmail_create_draft vs gmail_send \u2014 'do not send' is the key signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "gmail_create_draft",
+        "top_score": 0.3555
+      },
+      {
+        "id": "q18",
+        "query": "Post a threaded reply to that Slack message with today's test results",
+        "ground_truth": [
+          "slack_send_message_thread"
+        ],
+        "mode": "baseline",
+        "notes": "slack thread vs channel \u2014 'threaded reply' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "slack_send_message_thread",
+        "top_score": 0.8302
+      },
+      {
+        "id": "q19",
+        "query": "Find an available time slot and then book a calendar meeting event",
+        "ground_truth": [
+          "calendar_find_slot",
+          "calendar_create_event"
+        ],
+        "mode": "baseline",
+        "notes": "Multi-tool: sequential find-then-create pattern.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 2,
+        "top_prediction": "calendar_find_slot",
+        "top_score": 0.3215
+      },
+      {
+        "id": "q20",
+        "query": "Search existing GitHub issues for authentication problems before filing a new one",
+        "ground_truth": [
+          "github_search_issues"
+        ],
+        "mode": "baseline",
+        "notes": "github_search vs github_create \u2014 'search existing' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "github_search_issues",
+        "top_score": 0.2908
+      }
+    ]
+  },
+  "enriched": {
+    "aggregate": {
+      "n_queries": 20,
+      "hit@1": 0.4,
+      "hit@k": 0.4,
+      "mrr": 0.5875,
+      "avg_precision@k": 0.375,
+      "avg_recall@k": 0.375
+    },
+    "per_query": [
+      {
+        "id": "q01",
+        "query": "Create a bug report in GitHub for the authentication issue",
+        "ground_truth": [
+          "github_create_issue"
+        ],
+        "mode": "enriched",
+        "notes": "Simple single-tool; baseline should get this right.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1111,
+        "k": 1,
+        "top_prediction": "linear_assign_issue",
+        "top_score": 0.2036
+      },
+      {
+        "id": "q02",
+        "query": "Track this feature request in our Linear sprint backlog",
+        "ground_truth": [
+          "linear_create_issue"
+        ],
+        "mode": "enriched",
+        "notes": "GitHub vs Linear disambiguation \u2014 tests query_tips.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1111,
+        "k": 1,
+        "top_prediction": "linear_add_to_cycle",
+        "top_score": 0.2367
+      },
+      {
+        "id": "q03",
+        "query": "Send a notification to the engineering Slack channel about the deployment",
+        "ground_truth": [
+          "slack_send_message"
+        ],
+        "mode": "enriched",
+        "notes": "Slack vs Gmail \u2014 'Slack channel' is the key signal.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.3333,
+        "k": 1,
+        "top_prediction": "slack_add_reaction",
+        "top_score": 0.4549
+      },
+      {
+        "id": "q04",
+        "query": "Send a formal email to the client about the project status update",
+        "ground_truth": [
+          "gmail_send"
+        ],
+        "mode": "enriched",
+        "notes": "Gmail vs Slack \u2014 'formal email' + 'client' tips it.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "slack_send_message",
+        "top_score": 0.134
+      },
+      {
+        "id": "q05",
+        "query": "Run a shell command to check the disk space on the server",
+        "ground_truth": [
+          "bash_execute"
+        ],
+        "mode": "enriched",
+        "notes": "bash vs python \u2014 'shell command' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "bash_execute",
+        "top_score": 0.2333
+      },
+      {
+        "id": "q06",
+        "query": "Open a pull request for the feature branch I just pushed to GitHub",
+        "ground_truth": [
+          "github_create_pr"
+        ],
+        "mode": "enriched",
+        "notes": "Distinct intent \u2014 no close alternative in the registry.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "github_create_pr",
+        "top_score": 0.3966
+      },
+      {
+        "id": "q07",
+        "query": "Search online to find the latest release notes for scikit-learn",
+        "ground_truth": [
+          "web_search"
+        ],
+        "mode": "enriched",
+        "notes": "web_search vs web_fetch \u2014 'search online' tips it; URL not known.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1111,
+        "k": 1,
+        "top_prediction": "web_fetch",
+        "top_score": 0.1179
+      },
+      {
+        "id": "q08",
+        "query": "Read the contents of the pyproject.toml configuration file",
+        "ground_truth": [
+          "file_read"
+        ],
+        "mode": "enriched",
+        "notes": "Distinct file-system read intent.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "file_read",
+        "top_score": 0.2342
+      },
+      {
+        "id": "q09",
+        "query": "Execute a Python script to aggregate and transform the CSV data",
+        "ground_truth": [
+          "python_execute"
+        ],
+        "mode": "enriched",
+        "notes": "bash vs python \u2014 'Python script' is the disambiguating signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "python_execute",
+        "top_score": 0.2599
+      },
+      {
+        "id": "q10",
+        "query": "Ask Claude to summarize these meeting notes into a list of action items",
+        "ground_truth": [
+          "claude_invoke"
+        ],
+        "mode": "enriched",
+        "notes": "LLM selection \u2014 claude vs gemini vs gpt.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.25,
+        "k": 1,
+        "top_prediction": "github_search_issues",
+        "top_score": 0.1224
+      },
+      {
+        "id": "q11",
+        "query": "Find a free time slot for a one-hour meeting next Tuesday",
+        "ground_truth": [
+          "calendar_find_slot"
+        ],
+        "mode": "enriched",
+        "notes": "find_slot vs create_event \u2014 'find a slot' signals search.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "calendar_find_slot",
+        "top_score": 0.2555
+      },
+      {
+        "id": "q12",
+        "query": "Create a new Google Calendar event for the team standup at 9am tomorrow",
+        "ground_truth": [
+          "calendar_create_event"
+        ],
+        "mode": "enriched",
+        "notes": "create_event vs find_slot \u2014 'create an event' signals write.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "calendar_invite_attendees",
+        "top_score": 0.5209
+      },
+      {
+        "id": "q13",
+        "query": "Log this month's API cost as a transaction in the Notion budget tracker",
+        "ground_truth": [
+          "notion_update_budget"
+        ],
+        "mode": "enriched",
+        "notes": "Finance domain \u2014 Notion budget update.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "notion_query_database",
+        "top_score": 0.4142
+      },
+      {
+        "id": "q14",
+        "query": "Check whether there is already a Linear issue tracking this bug",
+        "ground_truth": [
+          "linear_search_issues"
+        ],
+        "mode": "enriched",
+        "notes": "Search-before-create \u2014 'check' and 'already' signal search intent.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.1667,
+        "k": 1,
+        "top_prediction": "linear_set_priority",
+        "top_score": 0.2786
+      },
+      {
+        "id": "q15",
+        "query": "Add the tech-debt label to GitHub issue number 42",
+        "ground_truth": [
+          "github_add_label"
+        ],
+        "mode": "enriched",
+        "notes": "Narrow GitHub sub-operation \u2014 labels.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.3333,
+        "k": 1,
+        "top_prediction": "github_assign_issue",
+        "top_score": 0.2418
+      },
+      {
+        "id": "q16",
+        "query": "Fetch the full page content of this documentation URL I already have",
+        "ground_truth": [
+          "web_fetch"
+        ],
+        "mode": "enriched",
+        "notes": "web_fetch vs web_search \u2014 'URL I already have' + 'full content'.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.5,
+        "k": 1,
+        "top_prediction": "web_search",
+        "top_score": 0.2829
+      },
+      {
+        "id": "q17",
+        "query": "Draft an email to the investor but do not send it yet \u2014 save as draft",
+        "ground_truth": [
+          "gmail_create_draft"
+        ],
+        "mode": "enriched",
+        "notes": "gmail_create_draft vs gmail_send \u2014 'do not send' is the key signal.",
+        "hit@1": 0,
+        "hit@k": 0,
+        "precision@k": 0.0,
+        "recall@k": 0.0,
+        "mrr": 0.3333,
+        "k": 1,
+        "top_prediction": "docs_search",
+        "top_score": 0.1318
+      },
+      {
+        "id": "q18",
+        "query": "Post a threaded reply to that Slack message with today's test results",
+        "ground_truth": [
+          "slack_send_message_thread"
+        ],
+        "mode": "enriched",
+        "notes": "slack thread vs channel \u2014 'threaded reply' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "slack_send_message_thread",
+        "top_score": 0.5213
+      },
+      {
+        "id": "q19",
+        "query": "Find an available time slot and then book a calendar meeting event",
+        "ground_truth": [
+          "calendar_find_slot",
+          "calendar_create_event"
+        ],
+        "mode": "enriched",
+        "notes": "Multi-tool: sequential find-then-create pattern.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 0.5,
+        "recall@k": 0.5,
+        "mrr": 1.0,
+        "k": 2,
+        "top_prediction": "calendar_find_slot",
+        "top_score": 0.3566
+      },
+      {
+        "id": "q20",
+        "query": "Search existing GitHub issues for authentication problems before filing a new one",
+        "ground_truth": [
+          "github_search_issues"
+        ],
+        "mode": "enriched",
+        "notes": "github_search vs github_create \u2014 'search existing' is the signal.",
+        "hit@1": 1,
+        "hit@k": 1,
+        "precision@k": 1.0,
+        "recall@k": 1.0,
+        "mrr": 1.0,
+        "k": 1,
+        "top_prediction": "github_search_issues",
+        "top_score": 0.2281
+      }
+    ]
+  },
+  "delta": {
+    "hit@1": -0.2,
+    "hit@k": -0.2,
+    "mrr": -0.1481,
+    "avg_precision@k": -0.225,
+    "avg_recall@k": -0.225
+  },
+  "summary": {
+    "hit@1_lift": "-20.0%",
+    "mrr_lift": "-0.1481"
+  },
+  "methodology_note": "TF-IDF baseline: enrichment degrades accuracy because alternatives cross-contaminate bag-of-words signal (competitor tool names in descriptions match competing queries). This is expected \u2014 fabric enrichment is optimised for LLM comprehension, not TF-IDF. Use an LLM selector for the treated condition in production benchmarks.",
+  "baseline_failure_analysis": {
+    "n_baseline_failures": 8,
+    "n_enriched_regressions": 5,
+    "root_cause": "Enriched descriptions include alternative tool IDs by name. TF-IDF treats these as signal, boosting competing tools for those queries."
+  }
+}
