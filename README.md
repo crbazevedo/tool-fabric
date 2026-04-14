@@ -224,6 +224,28 @@ benchmark protocol.
 
 ---
 
+## Results at 150 Tools (Governance Lift)
+
+Scale benchmark across Claude Haiku 4.5, Sonnet 4.6, and Opus 4.6 using 150 tools
+(41 registry tools + 109 confuser tools). OLD = raw descriptions; NEW = governed descriptions.
+
+| Model          | Baseline hit@1 | Governed hit@1 | Lift   |
+|----------------|----------------|----------------|--------|
+| Claude Haiku   | 0.52           | 0.66           | +14pp  |
+| Claude Sonnet  | 0.50           | 0.50 (hit@3 +14pp) | +0pp / +14pp |
+| Claude Opus    | 0.64           | 0.74           | +10pp  |
+
+**Key insight:** Governance benefits every model tier.
+Haiku + governance ≈ ungoverned Opus at the same scale.
+
+Cost implication: Haiku + governance (~$0.001/query) matches ungoverned Opus (~$0.015/query)
+at 150 tools — a 15× cost reduction with no accuracy trade-off.
+
+See `benchmarks/scale_benchmark.py` and `benchmarks/results/multi_model_results.json`
+for the full experiment.
+
+---
+
 ## Repository Structure
 
 ```
@@ -259,9 +281,9 @@ tool-fabric/
 
 ## Status
 
-**v0.1.0 — Research preview.** The schema, linter (16 checks), enricher, and benchmark
-harness are functional. The runtime proxy middleware (MCP proxy that injects metadata at
-inference time) is under active development.
+**v0.2.0 — Research preview.** The schema, linter (16 checks), enricher, benchmark
+harness, and multi-model scale benchmark are functional. The runtime proxy middleware
+(MCP proxy that injects metadata at inference time) is under active development.
 
 119 tests pass. CI-ready.
 

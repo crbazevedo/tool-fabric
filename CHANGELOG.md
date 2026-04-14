@@ -4,6 +4,37 @@ All notable changes to tool-fabric are documented here.
 
 ---
 
+## [0.2.0] — 2026-04-13
+
+### Multi-model scale benchmark (branch: claude/interesting-jennings)
+
+**`benchmarks/scale_benchmark.py`:**
+- `--model` flag supporting any Claude model (Haiku 4.5, Sonnet 4.6, Opus 4.6)
+- Scale-aware evaluation: 41 tools (registry) and 150 tools (registry + 109 confusers)
+- OLD/NEW × 41/150 full 2×2 factorial design per model
+- Governance lift analysis: hit@1, hit@3, MRR across conditions
+
+**`benchmarks/data/`:**
+- `old_descriptions.json`: 150-tool raw description corpus
+- `new_descriptions.json`: 150-tool governed description corpus (with query_tips, alternatives)
+- `confuser_tools.json`: 109 confuser tools for scale injection
+
+**`benchmarks/results/`:**
+- `multi_model_results.json`: combined governance lift summary across all three models
+- `scale_results.json`: full Haiku run (all queries × conditions × tools)
+- `scale_sonnet.json`: full Sonnet run
+- `scale_opus.json`: full Opus run
+
+**Key findings (governance lift at 150 tools, hit@1):**
+- Haiku: +14pp — strongest relative benefit; governance closes the gap to frontier
+- Sonnet: +0pp hit@1, +14pp hit@3 — guide helps at recall depth
+- Opus: +10pp — clear lift even for the strongest model
+
+**Cost-efficiency finding:** Haiku + governance (~$0.001/query) matches ungoverned
+Opus (~$0.015/query) at 150 tools — 15× cost reduction with no accuracy trade-off.
+
+---
+
 ## [0.1.0] — 2026-04-13
 
 ### Round 1 — Initial scaffold
