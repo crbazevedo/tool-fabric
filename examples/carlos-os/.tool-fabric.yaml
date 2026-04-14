@@ -1,11 +1,12 @@
 # CARLOS-OS .tool-fabric.yaml
-# Registry governance schema for CARLOS-OS — a multi-agent personal OS
-# with 95 tools across 6 domains: project-management, communication,
-# code, file-system, ai-inference, search, finance, calendar, devops.
+# Registry governance schema for CARLOS-OS — a multi-agent personal OS.
 #
-# 15 tools are fully specified here as canonical examples.
-# The remaining 80 follow the same pattern — category, description,
-# concepts_required, alternatives, composes_with, shapes, hints.
+# Tools covered: external integrations (GitHub, Linear, Slack, Gmail, etc.)
+# + internal CARLOS-OS MCP server tools (memory, knowledge base, situations).
+# Fully specified: 21 tools. Stub entries: 19 tools (same pattern, expand before use).
+#
+# Categories: project-management, communication, code, file-system,
+# ai-inference, search, finance, calendar, devops, memory.
 
 tools:
 
@@ -18,7 +19,7 @@ tools:
       and number. Use when tracking a bug, task, or feature request in a
       GitHub-hosted project. Do NOT use for Linear or Jira projects.
     concepts_required: [github.repo, github.auth]
-    alternatives: [linear_create_issue, jira_create_issue]
+    alternatives: [linear_create_issue]
     composes_with: [github_assign_issue, github_add_label, github_link_pr]
     input_shape:
       repo: string
@@ -45,7 +46,7 @@ tools:
       and identifier. Use when the team tracks work in Linear.
       Do NOT use for GitHub Issues or Jira tickets.
     concepts_required: [linear.project, linear.team, linear.auth]
-    alternatives: [github_create_issue, jira_create_issue]
+    alternatives: [github_create_issue]
     composes_with: [linear_assign_issue, linear_set_priority, linear_add_to_cycle]
     input_shape:
       team_id: string
@@ -81,6 +82,7 @@ tools:
     output_shape:
       issues: array
       total_count: integer
+      repo: string
     query_tips: >
       Use before github_create_issue to check for duplicates.
     cost_hints:
@@ -98,7 +100,7 @@ tools:
       timestamp. Use for team notifications, status updates, or async
       communication. Do NOT use for email — use gmail_send instead.
     concepts_required: [slack.channel, slack.auth]
-    alternatives: [gmail_send, teams_send_message]
+    alternatives: [gmail_send]
     composes_with: [slack_add_reaction, slack_send_message_thread]
     input_shape:
       channel_id: string
@@ -123,8 +125,8 @@ tools:
       Use for formal communications, external parties, or when a thread
       record is needed. Do NOT use for internal team chat — use slack_send_message.
     concepts_required: [gmail.auth, gmail.identity]
-    alternatives: [slack_send_message, outlook_send]
-    composes_with: [gmail_add_label, gmail_create_draft]
+    alternatives: [slack_send_message]
+    composes_with: [gmail_add_label]
     input_shape:
       to: string
       subject: string
@@ -153,7 +155,7 @@ tools:
       Do NOT use for Python code — use python_execute for isolated execution.
     concepts_required: [system.shell, system.cwd]
     alternatives: [python_execute]
-    composes_with: [file_read, file_write, bash_execute]
+    composes_with: [bash_execute]
     input_shape:
       command: string
       cwd: string
@@ -162,6 +164,7 @@ tools:
       stdout: string
       stderr: string
       exit_code: integer
+      cwd: string
     query_tips: >
       Use for shell operations. For Python scripts, use python_execute
       which provides better error isolation.
@@ -179,7 +182,7 @@ tools:
       a feature or fix branch. Do NOT use to push code — use bash_execute for git push.
     concepts_required: [github.repo, github.branch, github.auth]
     alternatives: []
-    composes_with: [github_request_review, github_add_label, slack_send_message]
+    composes_with: [github_request_review, github_add_label]
     input_shape:
       repo: string
       base_branch: string
@@ -217,6 +220,7 @@ tools:
     output_shape:
       results: array
       query: string
+      url: url
     query_tips: >
       Use when you need to find URLs. Once you have the URL, use web_fetch
       to read the full page content.
@@ -261,7 +265,7 @@ tools:
       source code, and documents. Returns error if file does not exist.
     concepts_required: [system.cwd]
     alternatives: []
-    composes_with: [file_write, bash_execute]
+    composes_with: [file_write]
     input_shape:
       path: file_path
       offset: integer
@@ -286,7 +290,7 @@ tools:
       and generated content. Read the file first to avoid data loss.
     concepts_required: [system.cwd]
     alternatives: []
-    composes_with: [bash_execute, file_read]
+    composes_with: [file_read]
     input_shape:
       path: file_path
       content: string
@@ -312,7 +316,7 @@ tools:
       Do NOT use for tasks that can be done with deterministic tools.
     concepts_required: [anthropic.auth]
     alternatives: [gemini_invoke, gpt_invoke]
-    composes_with: [file_write, slack_send_message, gmail_send]
+    composes_with: []
     input_shape:
       model: string
       prompt: string
@@ -341,7 +345,7 @@ tools:
       Do NOT use to find available times — use calendar_find_slot first.
     concepts_required: [google.calendar, google.auth]
     alternatives: []
-    composes_with: [calendar_invite_attendees, gmail_send]
+    composes_with: [calendar_invite_attendees]
     input_shape:
       title: string
       start_datetime: string
@@ -376,6 +380,7 @@ tools:
     output_shape:
       available_slots: array
       queried_range: string
+      start_datetime: string
     query_tips: >
       Run before calendar_create_event to find the best slot.
     cost_hints:
@@ -395,7 +400,7 @@ tools:
       notion_query_database for reads.
     concepts_required: [notion.database, notion.auth, finance.budget]
     alternatives: []
-    composes_with: [slack_send_message, notion_query_database]
+    composes_with: []
     input_shape:
       page_id: string
       properties: object
@@ -409,6 +414,201 @@ tools:
       tokens_consumed: 0
       idempotent: false
       side_effects: [modifies_notion_database]
+
+    # ── CARLOS-OS Memory & Knowledge (MCP Server) ─────────────────────────────
+  # These tools are provided by the CARLOS-OS MCP server backed by Redis.
+  # They give agents access to the internal memory store, knowledge base,
+  # situational awareness layer, and action queue.
+
+  search_facts:
+    category: memory
+    description: >
+      BM25 full-text search over CARLOS-OS stored facts (4,000+ entries).
+      Returns facts matching the query from the domain-specific knowledge base.
+      Use for domain-specific knowledge, stored agent learnings, and context.
+      Do NOT use for entity lookup (people, orgs) — use kb_hybrid_search instead.
+    concepts_required: [carlos_os.memory]
+    alternatives: [kb_hybrid_search, search_episodes]
+    composes_with: [store_fact, list_situations, kb_hybrid_search]
+    input_shape:
+      query: string
+      domain: string
+      limit: integer
+    output_shape:
+      facts: array
+      domain: string
+      query: string
+    query_tips: >
+      Use specific key terms ("Korza equity"), NOT natural language questions.
+      For entity lookup (people, orgs, dates), use kb_hybrid_search instead.
+    cost_hints:
+      latency_ms: 50
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  store_fact:
+    category: memory
+    description: >
+      Stores or updates a fact in the CARLOS-OS memory store (Redis).
+      Use to persist agent-generated knowledge, user corrections, and domain
+      context for future retrieval. Returns the stored key. Do NOT use for
+      event logging — use emit_event instead.
+    concepts_required: [carlos_os.memory]
+    alternatives: []
+    composes_with: [search_facts]
+    input_shape:
+      domain: string
+      key: string
+      value: string
+      confidence: float
+      source: string
+    output_shape:
+      stored_key: string
+      domain: string
+    query_tips: >
+      Always specify domain (engineering, career, finance) to avoid cross-domain
+      pollution. Use search_facts to check before overwriting.
+    cost_hints:
+      latency_ms: 30
+      tokens_consumed: 0
+      idempotent: false
+      side_effects: [modifies_redis_store]
+
+  list_situations:
+    category: memory
+    description: >
+      Lists active cognitive situations the CARLOS-OS cognition layer is monitoring,
+      sorted by urgency. Returns situations with confidence and urgency scores.
+      Use for status checks, priority triage, and domain health overview.
+      Do NOT use for task lookup — use list_actionables for tasks and commitments.
+    concepts_required: [carlos_os.memory]
+    alternatives: [list_actionables]
+    composes_with: [search_facts, list_actionables]
+    input_shape:
+      state: string
+      domain: string
+      min_urgency: float
+      limit: integer
+    output_shape:
+      situations: array
+      domain: string
+    query_tips: >
+      Use for "what should I worry about?" queries. For specific tasks,
+      deadlines, and commitments, use list_actionables instead.
+    cost_hints:
+      latency_ms: 100
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  list_actionables:
+    category: memory
+    description: >
+      Lists tasks, commitments, deadlines, and follow-ups from the CARLOS-OS
+      action queue, sorted by risk score. Use for "what do I need to do?",
+      "what's overdue?", or "what are my open commitments?". Do NOT use for
+      situational awareness — use list_situations for monitoring states.
+    concepts_required: [carlos_os.memory]
+    alternatives: [list_situations]
+    composes_with: [list_situations]
+    input_shape:
+      domain: string
+      status: string
+      limit: integer
+    output_shape:
+      actionables: array
+      total: integer
+      domain: string
+    query_tips: >
+      Use for tasks and deadlines. For situational awareness and
+      monitoring states, use list_situations instead.
+    cost_hints:
+      latency_ms: 80
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  kb_hybrid_search:
+    category: search
+    description: >
+      Hybrid BM25 + vector + graph search over CARLOS-OS knowledge base entities
+      extracted from Gmail, Calendar, and other sources. Returns people,
+      organizations, dates, and financial entities. Use as the primary entity
+      discovery tool. Do NOT use for agent facts — use search_facts instead.
+    concepts_required: [carlos_os.knowledge_base]
+    alternatives: [search_facts, kb_search_entities]
+    composes_with: [search_facts, list_situations]
+    input_shape:
+      query: string
+      entity_types: string
+      limit: integer
+    output_shape:
+      entities: array
+      total: integer
+      query: string
+      domain: string
+    query_tips: >
+      Use for people ("Who is X?"), orgs, and relationships. For stored agent
+      knowledge, use search_facts. For exact name lookup, use kb_search_entities.
+    cost_hints:
+      latency_ms: 200
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  kb_search_entities:
+    category: search
+    description: >
+      Substring search over CARLOS-OS knowledge base entity names and aliases.
+      Use for exact name lookup when you already know the entity name.
+      Faster than kb_hybrid_search. Do NOT use for semantic search — prefer
+      kb_hybrid_search when the exact name is unknown.
+    concepts_required: [carlos_os.knowledge_base]
+    alternatives: [kb_hybrid_search]
+    composes_with: [kb_hybrid_search]
+    input_shape:
+      query: string
+      entity_type: string
+      limit: integer
+    output_shape:
+      entities: array
+      query: string
+    query_tips: >
+      Use when you know the exact name ("Alice Smith", "Korza"). For semantic
+      or fuzzy search, use kb_hybrid_search.
+    cost_hints:
+      latency_ms: 30
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
+
+  search_episodes:
+    category: memory
+    description: >
+      Searches episode summaries from CARLOS-OS session history. Episodes are
+      agent-generated narratives of significant work sessions capturing what
+      happened and the outcome. Use for "what work was done on X?",
+      "what happened during sprint Y?". Do NOT use for current tasks — use
+      list_actionables for open items.
+    concepts_required: [carlos_os.memory]
+    alternatives: [search_facts]
+    composes_with: []
+    input_shape:
+      query: string
+      domain: string
+      agent: string
+      limit: integer
+    output_shape:
+      episodes: array
+    query_tips: >
+      Use for historical session narratives. For stored facts and knowledge,
+      use search_facts. For meeting notes, use search_notes_tool.
+    cost_hints:
+      latency_ms: 100
+      tokens_consumed: 0
+      idempotent: true
+      side_effects: []
 
   # ── Stub entries (pattern only, not fully specified) ──────────────────────
   # The following tools follow the same structure. Fully specify before linting.
@@ -539,7 +739,7 @@ tools:
     description: "Creates a Gmail draft without sending it."
     concepts_required: [gmail.auth, gmail.identity]
     alternatives: []
-    composes_with: [gmail_send]
+    composes_with: []
     input_shape: {to: string, subject: string, body: string}
     output_shape: {draft_id: string}
     cost_hints: {latency_ms: 300, idempotent: false, side_effects: [creates_gmail_draft]}
@@ -551,7 +751,7 @@ tools:
     alternatives: []
     composes_with: [notion_update_budget]
     input_shape: {database_id: string, filter: object, sorts: array}
-    output_shape: {pages: array, total: integer}
+    output_shape: {pages: array, total: integer, page_id: string}
     cost_hints: {latency_ms: 400, idempotent: true, side_effects: []}
 
   calendar_invite_attendees:
@@ -572,7 +772,7 @@ tools:
       script execution. Prefer over bash_execute for Python-specific tasks.
     concepts_required: [system.cwd]
     alternatives: [bash_execute]
-    composes_with: [file_write]
+    composes_with: []
     input_shape: {code: string, timeout_ms: integer}
     output_shape: {stdout: string, stderr: string, exit_code: integer}
     query_tips: "Use for Python code. For shell commands, use bash_execute."
@@ -594,7 +794,7 @@ tools:
     description: "Invokes Google Gemini for generation or multimodal tasks."
     concepts_required: [google.ai_auth]
     alternatives: [claude_invoke, gpt_invoke]
-    composes_with: [file_write, slack_send_message]
+    composes_with: []
     input_shape: {model: string, prompt: string, max_tokens: integer}
     output_shape: {response: string, model: string, usage_tokens: integer}
     query_tips: "Prefer for Google Workspace integration tasks or when Gemini context is needed."
@@ -605,7 +805,7 @@ tools:
     description: "Invokes OpenAI GPT for generation tasks."
     concepts_required: [openai.auth]
     alternatives: [claude_invoke, gemini_invoke]
-    composes_with: [file_write, slack_send_message]
+    composes_with: []
     input_shape: {model: string, prompt: string, max_tokens: integer}
     output_shape: {response: string, model: string, usage_tokens: integer}
     query_tips: "Use when OpenAI-specific capabilities are required (e.g. DALL-E, Whisper)."
@@ -741,6 +941,18 @@ concepts:
     examples: ["/Users/crbazevedo/Documents/tool-fabric"]
     scope: session
 
+  carlos_os.memory:
+    description: "Active connection to the CARLOS-OS Redis memory store with facts, actionables, and episodes."
+    prerequisites: []
+    examples: ["CARLOS-OS MCP server running on localhost:8000", "Redis on localhost:6379"]
+    scope: global
+
+  carlos_os.knowledge_base:
+    description: "CARLOS-OS knowledge base with entities from Gmail, Calendar, and ETL pipeline."
+    prerequisites: [carlos_os.memory]
+    examples: ["683+ KB entities indexed", "ETL pipeline has run"]
+    scope: global
+
 # ── Patterns ────────────────────────────────────────────────────────────────
 
 patterns:
@@ -795,12 +1007,25 @@ patterns:
       - "look up and write"
       - "find information and summarize"
     tool_sequence:
-      - [web_search, docs_search]
+      - [web_search, docs_search, search_facts]
       - web_fetch
       - claude_invoke
       - file_write
     merge_strategy: all
-    preconditions: [anthropic.auth, system.cwd]
+    preconditions: [anthropic.auth, system.cwd, carlos_os.memory]
+
+  carlos_os_status_check:
+    name: "CARLOS-OS domain status: situations + actionables + knowledge"
+    intent_triggers:
+      - "what's happening with"
+      - "status of"
+      - "what should I focus on"
+      - "give me a briefing on"
+    tool_sequence:
+      - [list_situations, list_actionables]
+      - [search_facts, kb_hybrid_search]
+    merge_strategy: all
+    preconditions: [carlos_os.memory, carlos_os.knowledge_base]
 
   budget_update:
     name: "Query budget and record a transaction"
