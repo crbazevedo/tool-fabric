@@ -33,7 +33,7 @@ SEVERITY_LABEL = {
 
 
 @click.group()
-@click.version_option()
+@click.version_option(package_name="tool-fabric")
 def cli():
     """Declarative governance for LLM tool registries."""
 
