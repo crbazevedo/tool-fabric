@@ -1,0 +1,28 @@
+version: "1"
+
+# Context routing manifest for tool-fabric. Loaded by the SessionStart hook
+# in .claude/settings.json (installed by `dfg-harness instrument --v2`).
+# Every agent dispatched on a tool-fabric unit cold-reads the global block;
+# wave/unit-specific reads are layered on top via per-unit `read_contract`
+# in .dfg/agents/&lt;id&gt;.md.
+
+global_context:
+  # Always-read briefing surface. Kept short — global context costs every
+  # dispatch.
+  - docs/VISION.md
+  - docs/RELEASE-NOTES.md
+  - .dfg/plan.yaml
+
+per_wave:
+  W1:
+    - spec/SPEC.md
+    - linter/cli.py
+    - tests/conftest.py
+
+per_unit:
+  W1-1:
+    must_read:
+      - linter/cli.py
+      - pyproject.toml
+    may_read:
+      - tests/test_checks.py

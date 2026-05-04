@@ -1,0 +1,48 @@
+version: "1.2.0"
+name: tool-fabric v0.3.0 (governed by dfg-harness)
+
+# v0.3.0 plan — only W1 fully decomposed; later waves are authored as
+# their sprints commit. See docs/VISION.md for the strategic outline
+# and docs/RELEASE-NOTES.md for the human-facing release scope.
+#
+# Phase / sprint mapping (forward-looking, not yet in waves[]):
+#   P1 / S1 → W1   (this wave — substrate seed + first deliberately-small unit)
+#   P2 / S2 → W2   (linter completeness — error rules)
+#   P2 / S3 → W3   (linter completeness — warnings, info, cross-rule)
+#   P3 / S4 → W4   (schema v2)
+#   P4 / S5 → W5   (benchmark expansion — 500-tool scale)
+#   P4 / S6 → W6   (benchmark expansion — long-tail compositional)
+#   P5 / S7 → W7   (adoption — fabric-lint GitHub Action)
+#   P5 / S8 → W8   (adoption — first external registry import)
+#   P6 / S9 → W9   (DX & docs)
+#   P7 / S10 → W10 (release ceremony)
+
+waves:
+  - id: W1
+    name: Substrate seed and deliberately-small first unit
+    units:
+      - id: W1-1
+        slug: fix-fabric-lint-version-broken
+        name: Fix broken `fabric-lint --version` (Click package_name inference)
+        purpose: >
+          The existing `@click.version_option()` decorator (no args) on the
+          `linter.cli` entry point fails at runtime: Click tries to infer
+          the package name from the entry's module ('linter') but the
+          installed package is 'tool-fabric'. Result: `fabric-lint --version`
+          raises RuntimeError "'linter' is not installed. Try passing
+          'package_name' instead."
+          The fix is a single-line edit: pass `package_name="tool-fabric"`
+          (or use `version=` directly). Closes the real DX bug surfaced by
+          the W1 dual-critic audit on PR #1.
+        files:
+          - linter/cli.py
+        depends_on: []
+        size: S
+    parallel_groups:
+      - [W1-1]
+    gate:
+      gate_type: wave-gate
+      checkpoint_file: .dfg/checkpoints/W1-gate.md
+      criteria:
+        - "fabric-lint --version returns the pyproject version on stdout and exits 0 (no RuntimeError)"
+        - "tests/test_cli.py covers the --version invocation as a regression test"
