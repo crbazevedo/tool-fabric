@@ -33,6 +33,11 @@ SEVERITY_LABEL = {
 
 
 @click.group()
+# `package_name` is a Click >= 8.0 kwarg. pyproject pins `click>=8.1`,
+# so the kwarg is always available. Removed from earlier versions
+# (Click 7) — if the pin is ever loosened, this fix silently regresses
+# (W1-1 cycle-2 assumption-critic MAJOR — flag here so any future click
+# bump downward is obvious).
 @click.version_option(package_name="tool-fabric")
 def cli():
     """Declarative governance for LLM tool registries."""
