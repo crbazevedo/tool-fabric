@@ -1,0 +1,38 @@
+version: "1.2.0"
+name: tool-fabric v0.3.0 (governed by dfg-harness)
+
+# v0.3.0 plan — only W1 fully decomposed; later waves are authored as
+# their sprints commit. See docs/VISION.md for the strategic outline
+# and docs/RELEASE-NOTES.md for the human-facing release scope.
+#
+# Phase / sprint mapping (forward-looking, not yet in waves[]):
+#   P1 / S1 → W1   (this wave — substrate seed + first deliberately-small unit)
+#   P2 / S2 → W2   (linter completeness — error rules)
+#   P2 / S3 → W3   (linter completeness — warnings, info, cross-rule)
+#   P3 / S4 → W4   (schema v2)
+#   P4 / S5 → W5   (benchmark expansion — 500-tool scale)
+#   P4 / S6 → W6   (benchmark expansion — long-tail compositional)
+#   P5 / S7 → W7   (adoption — fabric-lint GitHub Action)
+#   P5 / S8 → W8   (adoption — first external registry import)
+#   P6 / S9 → W9   (DX & docs)
+#   P7 / S10 → W10 (release ceremony)
+
+waves:
+  - id: W1
+    name: Substrate seed and deliberately-small first unit
+    units:
+      - id: W1-1
+        slug: fabric-lint-version-flag
+        name: Add `fabric-lint --version` flag (single-file CLI surface, 1 test)
+        files:
+          - linter/cli.py
+        depends_on: []
+        size: S
+    parallel_groups:
+      - [W1-1]
+    gate:
+      gate_type: wave-gate
+      checkpoint_file: .dfg/checkpoints/W1-gate.md
+      criteria:
+        - "fabric-lint --version returns the pyproject version on stdout and exits 0"
+        - "tests/test_cli.py covers the --version invocation"
