@@ -25,10 +25,8 @@ waves:
         slug: fix-fabric-lint-version-broken
         name: Fix broken fabric-lint --version (Click package_name inference)
         purpose: >
-          fabric-lint --version raises RuntimeError because Click cannot
-          infer the package name from the linter.cli module path. Fix:
-          pass package_name="tool-fabric" to @click.version_option().
-          Single-line edit + regression test. See contract for details.
+          fabric-lint --version raises RuntimeError. Fix: pass
+          package_name=tool-fabric to @click.version_option(). +regression test.
         files:
           - linter/cli.py
         depends_on: []
