@@ -23,17 +23,10 @@ waves:
     units:
       - id: W1-1
         slug: fix-fabric-lint-version-broken
-        name: Fix broken `fabric-lint --version` (Click package_name inference)
+        name: Fix broken fabric-lint --version (Click package_name inference)
         purpose: >
-          The existing `@click.version_option()` decorator (no args) on the
-          `linter.cli` entry point fails at runtime: Click tries to infer
-          the package name from the entry's module ('linter') but the
-          installed package is 'tool-fabric'. Result: `fabric-lint --version`
-          raises RuntimeError "'linter' is not installed. Try passing
-          'package_name' instead."
-          The fix is a single-line edit: pass `package_name="tool-fabric"`
-          (or use `version=` directly). Closes the real DX bug surfaced by
-          the W1 dual-critic audit on PR #1.
+          fabric-lint --version raises RuntimeError. Fix: pass
+          package_name=tool-fabric to @click.version_option(). +regression test.
         files:
           - linter/cli.py
         depends_on: []
