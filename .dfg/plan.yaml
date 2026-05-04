@@ -22,8 +22,18 @@ waves:
     name: Substrate seed and deliberately-small first unit
     units:
       - id: W1-1
-        slug: fabric-lint-version-flag
-        name: Add `fabric-lint --version` flag (single-file CLI surface, 1 test)
+        slug: fix-fabric-lint-version-broken
+        name: Fix broken `fabric-lint --version` (Click package_name inference)
+        purpose: >
+          The existing `@click.version_option()` decorator (no args) on the
+          `linter.cli` entry point fails at runtime: Click tries to infer
+          the package name from the entry's module ('linter') but the
+          installed package is 'tool-fabric'. Result: `fabric-lint --version`
+          raises RuntimeError "'linter' is not installed. Try passing
+          'package_name' instead."
+          The fix is a single-line edit: pass `package_name="tool-fabric"`
+          (or use `version=` directly). Closes the real DX bug surfaced by
+          the W1 dual-critic audit on PR #1.
         files:
           - linter/cli.py
         depends_on: []
@@ -34,5 +44,5 @@ waves:
       gate_type: wave-gate
       checkpoint_file: .dfg/checkpoints/W1-gate.md
       criteria:
-        - "fabric-lint --version returns the pyproject version on stdout and exits 0"
-        - "tests/test_cli.py covers the --version invocation"
+        - "fabric-lint --version returns the pyproject version on stdout and exits 0 (no RuntimeError)"
+        - "tests/test_cli.py covers the --version invocation as a regression test"

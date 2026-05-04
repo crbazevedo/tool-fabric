@@ -37,32 +37,52 @@ reasoning. `tool-fabric` is the missing structural metadata layer.
 
 ## §3 — Empirical receipts (v0.2.0)
 
-Multi-model benchmark (Haiku 4.5 / Sonnet 4.6 / Opus 4.6 × OLD/NEW × 41/150 tools):
+Multi-model benchmark (Haiku 4.5 / Sonnet 4.6 / Opus 4.6 × OLD/NEW × 41/150 tools).
+Numbers below are **as cited in `CHANGELOG.md` v0.2.0 entry**; raw runs in
+`benchmarks/results/{multi_model_results,scale_results,scale_sonnet,scale_opus}.json`
+are authoritative and any contradiction with this section should be
+treated as the table being stale.
 
-| Metric (150-tool, hit@1 governance lift) | Value |
+| Metric (150-tool, hit@1 governance lift) | Value (per CHANGELOG) |
 |---|---|
 | Haiku +pp | **+14** |
 | Sonnet (hit@1) | +0 |
 | Sonnet (hit@3) | +14 |
 | Opus +pp | **+10** |
 
-**Cost-efficiency receipt:** Haiku + governance ($0.001/query) ≈ Opus
-ungoverned ($0.015/query) at 150 tools. **15× cost reduction with no
-accuracy trade-off.** This is the same value proposition as dfg-harness
-(governance &gt; scale) in a different domain.
+**Cost-efficiency receipt (per CHANGELOG):** Haiku + governance
+(~$0.001/query) ≈ Opus ungoverned (~$0.015/query) at 150 tools — **15×
+cost reduction with no accuracy trade-off**. This is the same value
+proposition as dfg-harness (governance &gt; scale) in a different domain.
+
+**Provenance:** Numbers in this section were lifted from
+`CHANGELOG.md` v0.2.0 entry by the dfg-harness discovery agent on
+2026-05-04. They have NOT been independently re-run from the raw
+result files in this PR's scope; W6 (benchmark expansion) is the
+appropriate wave for re-running and amending.
 
 ## §4 — Current surface
 
-| Component | LOC | Status |
+LOC counts measured at HEAD on 2026-05-04 via `wc -l`. Test count cited
+from CHANGELOG ("36-test suite"); not independently audited in this pass.
+
+| Component | LOC (`wc -l`) | Status |
 |---|---|---|
-| `linter/checks.py` (16 rules) | 815 | shipped |
+| `linter/checks.py` (linter rules) | 815 | shipped |
 | `linter/cli.py` (check / report / init) | 241 | shipped |
 | `runtime/enricher.py` (FabricEnricher) | 162 | shipped |
 | `spec/SPEC.md` (formal spec) | — | drafted |
 | `spec/schema.yaml` (JSON Schema) | — | shipped |
-| `tests/` (test_checks / test_enricher / test_benchmark) | — | 36 tests |
+| `tests/` (test_checks / test_enricher / test_benchmark) | — | 36 tests (per CHANGELOG) |
 | `examples/carlos-os/` (annotated 41-tool registry) | — | shipped |
 | `benchmarks/scale_benchmark.py` (multi-model harness) | — | shipped |
+
+Note: README §"Linter Rules (16 checks)" enumerates 16 rules. CHANGELOG
+v0.1.0 says "12 check implementations (E001-E005, W001-W004, I001-I003)".
+The delta (4 rules) is presumed shipped in v0.2.0 / round-2/3/4 work
+based on commit titles, but not audited per-rule in this discovery pass.
+**W2 (linter completeness — error rules)** is the right wave to verify
+which rules are shipped vs planned.
 
 **Stack:** Python 3.10+, Click + PyYAML core; optional sentence-transformers
 + scikit-learn + numpy for similarity / benchmarks. Hatchling build.
